@@ -1,4 +1,6 @@
 # %%
+import os
+import collections
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -15,17 +17,26 @@ apta2007 = apta2007.iloc[1:, :]  # Selecting all rows except the 1st one
 # Resetting the row index to start from 0
 apta2007.index = range(len(apta2007.index))
 cnames = list(apta2007.columns)
-cities = {'CA': ['San Diego, CA', 'San Francisco--Oakland, CA', 'Los Angeles--Long Beach--Santa Ana, CA'], 'WA': ['Seattle, WA'], 'TX': ['Austin, TX', 'Houston, TX', 'Dallas--Fort Worth--Arlington, TX'], 'NY': ['New York--Newark, NY-NJ-CT'], 'IN': ['Chicago, IL-IN'], 'MI': ['Detroit, MI'],
-          'GA': ['Atlanta, GA'], 'FL': ['Miami, FL', 'Orlando, FL'], 'AZ': ['Phoenix--Mesa, AZ'], 'PA': ['Philadelphia, PA-NJ-DE-MD', 'Pittsburgh, PA'], 'WI': ['Milwaukee, WI', 'Madison, WI'], 'CO': ['Denver--Aurora, CO'], 'NV': ['Las Vegas, NV'], 'UT': ['Salt Lake City, UT']}
+cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IN': ['Chicago'], 'MI': ['Detroit'],
+          'GA': ['Atlanta'], 'FL': ['Miami', 'Orlando'], 'AZ': ['Phoenix'], 'PA': ['Philadelphia', 'Pittsburgh'], 'WI': ['Milwaukee', 'Madison'], 'CO': ['Denver'], 'NV': ['Las Vegas'], 'UT': ['Salt Lake City']}
 cindexer = {}  # City indexer
 for state in cities.keys():
     cindexer[state] = list()
     for city in cities[state]:
-        temp_index = apta2007.index[apta2007[cnames[0]] == city].tolist()
-        if temp_index:  # Makes sure we are not trying to append when list is empty
-            cindexer[state].append(temp_index[0])
+        truevals = apta2007[cnames[0]].str.contains(city)
+        temp_index = [i for i, x in enumerate(truevals) if x][-1]
+        cindexer[state].append(temp_index)
 print(cindexer)
-print(cnames)
+
+items = os.listdir(".")
+
+datasets = []
+for names in items:
+    if names.endswith("Appendix_B.xls") or names.endswith("Appendix_B.xlsx"):
+        datasets.append(names)
+print(datasets)
+
+# print(cnames)
 
 # %%
 plt.style.use('seaborn-whitegrid')
