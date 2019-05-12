@@ -1,0 +1,381 @@
+"PRIMARY CITY 
+SERVED","TRANSIT AGENCY","TOTAL 
+VEHICLES","CAPITAL 
+EXPENSE 
+(000) (b)","FARE 
+REVENUE 
+(000)","OPERATING 
+EXPENSES 
+(000)"
+"Kansas City, MO 
+Las Vegas, NV 
+Long Beach, CA 
+Los Angeles, CA 
+Los Angeles, CA 
+Los Angeles, CA 
+Louisville, KY 
+Memphis, TN 
+Miami, FL 
+Milwaukee, WI 
+Minneapolis, MN 
+ 
+ 
+New Orleans, LA 
+New York, NY 
+ 
+ 
+ 
+New York, NY 
+Newark, NJ 
+Norfolk, VA 
+Oakland, CA 
+Oceanside, CA 
+Orlando, FL 
+Philadelphia, PA 
+ 
+ 
+Phoenix, AZ 
+Pittsburgh, PA 
+Portland, OR 
+Providence, RI 
+Riverside, CA 
+Rockville, MD 
+Sacramento, CA 
+St. Louis, MO 
+St. Petersburg, FL 
+Salt Lake City, UT 
+San Antonio, TX 
+San Bernardino, CA  Omnitrans 
+San Diego, CA 
+ 
+ 
+ 
+San Francisco, CA 
+San Francisco, CA 
+ 
+ 
+San Francisco, CA 
+San Jose, CA 
+San Juan, PR 
+Santa Ana, CA 
+Santa Monica, CA 
+Seattle, WA 
+ 
+ 
+Seattle, WA 
+Springfield, MA 
+Tacoma, WA 
+Tampa, FL 
+Tucson, AZ 
+Washington, DC 
+White Plains, NY 
+Wilmington, DE","Kansas City Area Trp Auth 
+Regional Trp Comm of Southern NV 
+Long Beach Transit 
+City of Los Angeles Dept of Trp 
+Foothill Transit 
+Los Angeles County Metro Trp Auth 
+Transit Authority of River City 
+Memphis Area Transit Authority 
+Miami-Dade Transit Agency 
+Milwaukee County Transit System 
+Metropolitan Council 
+    Metro Transit 
+    Metropolitan Council 
+Regional Transit Authority 
+Metropolitan Transportation Authority 
+    MTA Long Island Bus 
+    MTA Metro-North Railroad 
+    MTA New York City Transit 
+New York City Department of Trp 
+New Jersey Transit Corporation 
+Trp Dist Comm of Hampton Roads 
+Alameda-Contra Costa Transit Dist 
+North San Diego County Tr Devel Bd 
+Central Florida Regional Trp Auth 
+Southeastern Pennsylvania Trp Auth 
+    Bus 
+    Trolleybus 
+City of Phoenix Public Transit Dept 
+Port Authority of Allegheny County 
+Tri-County Metropolitan Trp District 
+Rhode Island Public Transit Authority 
+Riverside Transit Agency 
+Montgomery County Ride-On 
+Sacramento Regional Transit District 
+Bi-State Development Agency 
+Pinellas Suncoast Transit Authority 
+Utah Transit Authority (c) 
+VIA Metropolitan Transit 
+San Diego Metropolitan Transit Sys 
+    County of San Diego Transit Sys 
+    Metropolitan Transit Devel Board 
+    San Diego Metro Transit System 
+Golden Gate Bridge, Hwy & Trp Dist 
+San Francisco Municipal Railway 
+    Bus 
+    Trolleybus 
+San Mateo County Transit District 
+Santa Clara Valley Trp Auth 
+Metropolitan Bus Authority 
+Orange County Transportation Auth 
+Santa Monica's Big Blue Bus 
+King County Department of Trp 
+    Bus 
+    Trolleybus 
+Snohomish County Pub Trp BA 
+Pioneer Valley Transit Authority 
+Pierce Transit 
+Hillsborough Area Regional Tr Auth 
+City of Tucson Transit System 
+Washington Metro Area Tr Auth 
+Westchester County Dept of Trp 
+Delaware Transit Corporation","282
+304
+224
+256
+299
+2,643
+276
+221
+969
+501
+1,255
+980
+275
+364
+4,832
+336
+10
+4,486
+1,296
+2,186
+322
+779
+154
+244
+1,425
+1,359
+66
+462
+1,055
+695
+190
+132
+317
+214
+473
+172
+442
+499
+179
+557
+102
+121
+334
+278
+927
+577
+350
+332
+524
+313
+592
+216
+1,110
+991
+119
+308
+190
+249
+NA
+199
+1,442
+357
+202","17,289.9
+16,859.4
+12,874.5
+10,135.2
+15,333.5
+192,813.0
+14,674.1
+7,293.9
+44,454.0
+18,258.7
+93,455.2
+64,455.0
+29,000.2
+1,607.6
+189,700.5
+14,372.8
+0.0
+175,327.7
+0.0
+58,778.7
+20,986.7
+17,693.4
+7,985.7
+14,138.4
+80,464.5
+80,337.9
+126.6
+59,815.5
+81,913.4
+10,588.5
+23,942.3
+19,145.6
+9,987.0
+8,797.7
+46,358.2
+7,174.3
+17,840.6
+5,234.3
+11,937.1
+505.3
+0.0
+505.3
+0.0
+2,138.4
+114,216.1
+53,932.2
+60,283.9
+20,288.8
+74,465.8
+2,906.8
+90,524.7
+33,415.2
+105,596.2
+57,007.4
+48,588.8
+108.8
+10,258.8
+9,844.9
+24,020.7
+13,429.5
+89,281.1
+5,617.8
+8,768.9","7,256.6 
+33,231.7 
+12,428.8 
+5,530.6 
+14,008.8 
+211,497.1 
+5,374.9 
+9,166.7 
+54,728.6 
+36,288.7 
+65,934.6 
+62,250.7 
+3,683.9 
+30,924.8 
+NA 
+NA 
+223.0 
+603,544.4 
+NA 
+224,531.7 
+12,436.9 
+45,136.2 
+8,455.7 
+11,714.7 
+144,921.0 
+137,209.2 
+7,711.8 
+20,042.1 
+50,852.8 
+37,085.8 
+10,481.2 
+5,331.3 
+NA 
+6,805.9 
+22,626.5 
+7,817.3 
+10,906.5 
+14,240.6 
+11,110.2 
+38,340.1 
+3,287.6 
+9,138.8 
+25,913.7 
+15,309.9 
+67,807.3 
+37,695.8 
+30,111.5 
+27,149.7 
+25,394.1 
+9,080.5 
+38,648.6 
+8,208.1 
+75,007.8 
+55,995.0 
+19,012.8 
+11,226.3 
+4,631.6 
+6,971.2 
+6,194.7 
+6,773.6 
+89,707.7 
+NA 
+5,517.0","47,029.1
+69,064.6
+46,146.1
+32,581.9
+42,777.3
+729,779.6
+40,244.1
+36,864.0
+164,278.1
+114,555.3
+215,345.3
+191,673.2
+23,672.1
+84,269.4
+1,560,731.8
+83,471.4
+911.8
+1,476,348.6
+295,483.0
+524,842.6
+42,728.8
+217,688.4
+36,412.0
+58,830.3
+381,709.9
+370,435.8
+11,274.1
+85,782.4
+210,104.9
+170,037.2
+52,504.1
+26,655.8
+60,563.8
+58,348.4
+106,484.7
+29,897.7
+83,412.9
+76,003.1
+42,549.6
+107,766.1
+14,934.0
+16,653.6
+76,178.5
+58,547.1
+287,547.4
+171,652.1
+115,895.3
+72,013.1
+219,360.7
+60,262.2
+132,151.0
+32,412.5
+320,538.3
+279,791.6
+40,746.7
+50,168.2
+19,443.9
+49,109.6
+29,916.5
+31,618.0
+342,559.0
+71,992.8
+29,502.9"

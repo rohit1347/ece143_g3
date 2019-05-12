@@ -1,0 +1,6 @@
+-- Changes to PATH Variable for Windows --
+Make sure XPDF and Tesseract directories are added to PATH user environment variable.
+
+-- To convert PDF to TIFF -- 
+convert -density 300 "APTA-1946-Transit-Fact-Book.pdf" -depth 8 -strip -background white -alpha off "1946_apta.tiff"
+
