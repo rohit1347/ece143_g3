@@ -17,6 +17,7 @@ apta2007 = apta2007.iloc[1:, :]  # Selecting all rows except the 1st one
 # Resetting the row index to start from 0
 apta2007.index = range(len(apta2007.index))
 cnames = list(apta2007.columns)
+cities_ntuple = collections.namedtuple
 cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IN': ['Chicago'], 'MI': ['Detroit'],
           'GA': ['Atlanta'], 'FL': ['Miami', 'Orlando'], 'AZ': ['Phoenix'], 'PA': ['Philadelphia', 'Pittsburgh'], 'WI': ['Milwaukee', 'Madison'], 'CO': ['Denver'], 'NV': ['Las Vegas'], 'UT': ['Salt Lake City']}
 cindexer = {}  # City indexer
@@ -27,16 +28,6 @@ for state in cities.keys():
         temp_index = [i for i, x in enumerate(truevals) if x][-1]
         cindexer[state].append(temp_index)
 print(cindexer)
-
-items = os.listdir(".")
-
-datasets = []
-for names in items:
-    if names.endswith("Appendix_B.xls") or names.endswith("Appendix_B.xlsx"):
-        datasets.append(names)
-print(datasets)
-
-# print(cnames)
 
 # %%
 plt.style.use('seaborn-whitegrid')
