@@ -22,9 +22,6 @@ print(datasets)
 dataset_index = dict()
 for excel in datasets:
     sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
-#     sheet = sheet.iloc[1:, :]  # Selecting all rows except the 1st one
-    # Resetting the row index to start from 0
-#     sheet.index = range(len(sheet.index))
     cnames = list(sheet.columns)
     print(cnames[0])
     cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IN': ['Chicago'], 'MI': ['Detroit'],
@@ -37,7 +34,6 @@ for excel in datasets:
             temp_index = [i for i, x in enumerate(truevals) if x][-1]
             cindexer[state].append(temp_index)
     dataset_index[excel] = cindexer
-#     print(cindexer)
 print(dataset_index)
 # %%
 plt.style.use('seaborn-whitegrid')
