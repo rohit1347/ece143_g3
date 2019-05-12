@@ -13,14 +13,16 @@ plt.style.use('classic')
 
 apta2007 = pd.read_excel('2009_Fact_Book_Appendix_B.xlsx',
                          sheet_name='UZA Totals', index_col=3)
-apta2007 = apta2007.iloc[1:, :]  # Selecting all rows except the 1st one
+# apta2007 = apta2007.iloc[1:, :]  # Selecting all rows except the first 3
 # Resetting the row index to start from 0
-apta2007.index = range(len(apta2007.index))
+# apta2007.index = range(len(apta2007.index))
 cnames = list(apta2007.columns)
-cities_ntuple = collections.namedtuple
+
 cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IN': ['Chicago'], 'MI': ['Detroit'],
           'GA': ['Atlanta'], 'FL': ['Miami', 'Orlando'], 'AZ': ['Phoenix'], 'PA': ['Philadelphia', 'Pittsburgh'], 'WI': ['Milwaukee', 'Madison'], 'CO': ['Denver'], 'NV': ['Las Vegas'], 'UT': ['Salt Lake City']}
+
 cindexer = {}  # City indexer
+
 for state in cities.keys():
     cindexer[state] = list()
     for city in cities[state]:
