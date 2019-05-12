@@ -14,7 +14,7 @@ apta2007 = pd.read_excel('2009_Fact_Book_Appendix_B.xlsx',
 apta2007 = apta2007.iloc[1:, :]  # Selecting all rows except the 1st one
 # Resetting the row index to start from 0
 apta2007.index = range(len(apta2007.index))
-cnames = list(apta2007.columns.values)
+cnames = list(apta2007.columns)
 cities = {'CA': ['San Diego, CA', 'San Francisco--Oakland, CA', 'Los Angeles--Long Beach--Santa Ana, CA'], 'WA': ['Seattle, WA'], 'TX': ['Austin, TX', 'Houston, TX', 'Dallas--Fort Worth--Arlington, TX'], 'NY': ['New York--Newark, NY-NJ-CT'], 'IN': ['Chicago, IL-IN'], 'MI': ['Detroit, MI'],
           'GA': ['Atlanta, GA'], 'FL': ['Miami, FL', 'Orlando, FL'], 'AZ': ['Phoenix--Mesa, AZ'], 'PA': ['Philadelphia, PA-NJ-DE-MD', 'Pittsburgh, PA'], 'WI': ['Milwaukee, WI', 'Madison, WI'], 'CO': ['Denver--Aurora, CO'], 'NV': ['Las Vegas, NV'], 'UT': ['Salt Lake City, UT']}
 cindexer = {}  # City indexer
@@ -25,6 +25,7 @@ for state in cities.keys():
         if temp_index:  # Makes sure we are not trying to append when list is empty
             cindexer[state].append(temp_index[0])
 print(cindexer)
+print(cnames)
 
 # %%
 plt.style.use('seaborn-whitegrid')
