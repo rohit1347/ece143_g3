@@ -19,8 +19,7 @@ print(datasets)
 
 # %%
 # Using pandas
-# Picking data for 2007 from 2009 xls
-# i = 0
+dataset_index = dict()
 for excel in datasets:
     sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
 #     sheet = sheet.iloc[1:, :]  # Selecting all rows except the 1st one
@@ -37,10 +36,9 @@ for excel in datasets:
             truevals = sheet[cnames[0]].str.contains(city)
             temp_index = [i for i, x in enumerate(truevals) if x][-1]
             cindexer[state].append(temp_index)
-    print(cindexer)
-#     i = i+1
-#  print(i)
-
+    dataset_index[excel] = cindexer
+#     print(cindexer)
+print(dataset_index)
 # %%
 plt.style.use('seaborn-whitegrid')
 apta2007.plot(
