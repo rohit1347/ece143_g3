@@ -6,8 +6,12 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import string
-plt.style.use('classic')
+from ProjectWorkspace import cities
 
+plt.style.use('classic')
+# %%
+# cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IN': ['Chicago'], 'MI': ['Detroit'],
+#           'GA': ['Atlanta'], 'FL': ['Miami', 'Orlando'], 'AZ': ['Phoenix'], 'PA': ['Philadelphia', 'Pittsburgh'], 'WI': ['Milwaukee', 'Madison'], 'CO': ['Denver'], 'NV': ['Las Vegas'], 'UT': ['Salt Lake City']}
 # %%
 # Extracting list of the names of all required excels
 
@@ -28,11 +32,7 @@ def get_xls():
 # Using pandas
 
 
-cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IN': ['Chicago'], 'MI': ['Detroit'],
-          'GA': ['Atlanta'], 'FL': ['Miami', 'Orlando'], 'AZ': ['Phoenix'], 'PA': ['Philadelphia', 'Pittsburgh'], 'WI': ['Milwaukee', 'Madison'], 'CO': ['Denver'], 'NV': ['Las Vegas'], 'UT': ['Salt Lake City']}
-
-
-def create_city_dataframes(cities=cities):
+def create_empty_city_dataframes(cities=cities):
     """Returns a list of empty dataframes for each city in the input dictionary.
 
     Keyword Arguments:
@@ -46,11 +46,47 @@ def create_city_dataframes(cities=cities):
     dataframe_list = [None] * total_cities
     for idx in range(total_cities):
         dataframe_list[idx] = pd.DataFrame()
+    print('Created dataframes list')
     return dataframe_list
+# %%
+
+
+def get_city_indices(cities=cities, sheet=sheet):
+    assert isinstance(cities, dict)
+    assert all(isinstance(cities[state]) for state in cities.keys())
+    assert sheet.__name__ == 'pandas.core.frame.DataFrame'
+    cindexer = {}  # City indexer
+    cnames = list(sheet.columns)
+    for state in cities.keys():
+        cindexer[state] = list()
+        for city in cities[state]:
+            truevals = sheet[cnames[0]].str.contains(city)
+            temp_index = [i for i, x in enumerate(truevals) if x][-1]
+            cindexer[state].append(temp_index)
+    return(cindexer)
 
 
 # %%
+def create_city_dataframes(pflag=0, cities=cities):
+    assert isinstance(pflag, int)
+    assert pflag == 0 or pflag == 1
+    assert isinstance(cities, dict)
+    assert all(isinstance(cities[state]) for state in cities.keys())
+
+    datasets = get_xls()
+    filled_frames = create_empty_city_dataframes()
+    for excel in datasets:
+        sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
+        cnames = list(sheet.columns)
+        if pflag:
+            # Prints the columns found in each excel file
+            print(f'Columns in {excel}: {cnames}\n')
+        for citynum, cframe in enumerate(filled_frames):
+            cindexer = get_city_indices()
+
+
 datasets = get_xls()
+dataset_index = dict()
 for excel in datasets:
     sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
     cnames = list(sheet.columns)
@@ -66,8 +102,6 @@ for excel in datasets:
     dataset_index[excel] = cindexer
 print(dataset_index)
 
-# %%
-dataset_index = dict()
 
 # %%
 plt.style.use('seaborn-whitegrid')
