@@ -9,9 +9,7 @@ import string
 from ProjectWorkspace import cities
 
 plt.style.use('classic')
-# %%
-# cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IN': ['Chicago'], 'MI': ['Detroit'],
-#           'GA': ['Atlanta'], 'FL': ['Miami', 'Orlando'], 'AZ': ['Phoenix'], 'PA': ['Philadelphia', 'Pittsburgh'], 'WI': ['Milwaukee', 'Madison'], 'CO': ['Denver'], 'NV': ['Las Vegas'], 'UT': ['Salt Lake City']}
+
 # %%
 # Extracting list of the names of all required excels
 
@@ -83,6 +81,11 @@ def create_city_dataframes(pflag=0, cities=cities):
             print(f'Columns in {excel}: {cnames}\n')
         for citynum, cframe in enumerate(filled_frames):
             cindexer = get_city_indices()
+            # What is left:
+            # (i) You are in a sheet
+            # (ii) you have the row indices for the cities in the sheet
+            # (iii) You need to find the column indices for the data you want
+            # (iv) Store the data in one column of the dataframe
 
 
 datasets = get_xls()
