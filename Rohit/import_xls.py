@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import string
 from ProjectWorkspace import *
 assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
+%matplotlib inline
 # plt.style.use('classic')
 
 
@@ -26,7 +27,7 @@ def get_xls(pflag=0):
     datasets = sorted(datasets)
     years = []
     for year in datasets:
-        years.append(''.join([y for y in list(year) if y.isdigit()]))
+        years.append(int(''.join([y for y in list(year) if y.isdigit()])))
     if pflag:
         print(f'Excel files found= {datasets}\n')
         print(f'Years= {years}\n')
@@ -114,8 +115,20 @@ def create_city_dataframes(pflag=0, cities=cities):
 
 # %% Plotting
 transportation = create_city_dataframes()
-sd =
-
+sd = transportation['CA'][0]
+# %%
+plt.figure(1)
+plt.plot(sd.index, sd['Vehicles in Service'])
+plt.title('San Diego - Vehicles in Service')
+plt.xlabel('Year')
+plt.ylabel('# of Vehicles')
+plt.show()
+plt.figure(2)
+plt.plot(sd.index, sd['Urban Population'])
+plt.title('San Diego - Urban Population')
+plt.xlabel('Year')
+plt.ylabel('Population')
+plt.show()
 # %% Testing
 start = time.time()
 create_city_dataframes(pflag=1)
