@@ -11,6 +11,7 @@ from ProjectWorkspace import *
 assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
 %matplotlib inline
 # plt.style.use('classic')
+plt.style.use('fivethirtyeight')
 
 
 def get_xls(pflag=0):
@@ -113,28 +114,20 @@ def create_city_dataframes(pflag=0, cities=cities):
     return filled_frames
 
 
-# %% Plotting
-transportation = create_city_dataframes()
-sd = transportation['CA'][0]
 # %%
-plt.figure(1)
-plt.plot(sd.index, sd['Vehicles in Service'])
-plt.title('San Diego - Vehicles in Service')
-plt.xlabel('Year')
-plt.ylabel('# of Vehicles')
-plt.show()
-plt.figure(2)
-plt.plot(sd.index, sd['Urban Population'])
-plt.title('San Diego - Urban Population')
-plt.xlabel('Year')
-plt.ylabel('Population')
-plt.show()
-# %% Testing
 start = time.time()
-create_city_dataframes(pflag=1)
+transportation = create_city_dataframes()
 end = time.time()
-print(end-start)
+print(f'Time to compute dataframes: {end-start}')
+sd = transportation['CA'][0]
+# %% Plotting
 
+for column in sd.columns:
+    plt.plot(sd.index, sd[column])
+    plt.title(f'San Diego - {column}')
+    plt.xlabel('Year')
+    plt.ylabel(column)
+    plt.show()
 # %%
 # datasets = get_xls()
 datasets = ['2008_Fact_Book_Appendix_B.xls']
@@ -153,9 +146,3 @@ for excel in datasets:
             cindexer[state].append(temp_index)
     dataset_index[excel] = cindexer
 print(dataset_index)
-
-
-# %%
-plt.style.use('seaborn-whitegrid')
-apta2007.plot(
-    kind='line', x=apta2007.iloc[0][0], y=apta2007.iloc[0][1])
