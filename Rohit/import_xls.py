@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import string
-from ProjectWorkspace import cities
+from ProjectWorkspace import *
 
 plt.style.use('classic')
 
@@ -26,9 +26,6 @@ def get_xls():
     print(f'Excel files found= {datasets}')
     return datasets
 
-# %%
-# Using pandas
-
 
 def create_empty_city_dataframes(cities=cities):
     """Returns a list of empty dataframes for each city in the input dictionary.
@@ -46,7 +43,6 @@ def create_empty_city_dataframes(cities=cities):
         dataframe_list[idx] = pd.DataFrame()
     print('Created dataframes list')
     return dataframe_list
-# %%
 
 
 def get_city_indices(cities=cities, sheet=sheet):
