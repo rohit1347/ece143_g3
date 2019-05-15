@@ -7,7 +7,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import string
 from ProjectWorkspace import *
-
+assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
 # plt.style.use('classic')
 
 
@@ -32,7 +32,7 @@ def get_xls(pflag=0):
     return datasets, years
 
 
-def create_empty_city_dataframes(cities=cities):
+def create_empty_city_dataframes(cities=cities, pflag=0):
     """Returns a dictionary containing dataframes corresponding to cities.
 
     Keyword Arguments:
@@ -40,13 +40,15 @@ def create_empty_city_dataframes(cities=cities):
     """
     assert isinstance(cities, dict)
     assert all(isinstance(cities[state], list) for state in cities.keys())
+    assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
     dataframe_dict = dict()
     for state in cities.keys():
         dataframe_dict[state] = [None]*len(cities[state])
         for cix, city in enumerate(cities[state]):
             dataframe_dict[state][cix] = pd.DataFrame(
                 columns=col_index_names, index=get_xls()[-1])
-    print('Created empty dataframes dict')
+    if pflag:
+        print('Created empty dataframes dict')
     return dataframe_dict
 
 
@@ -61,6 +63,7 @@ def get_city_indices(cities=cities, sheet=pd.DataFrame()):
     assert all(isinstance(cities[state], list) for state in cities.keys())
     assert isinstance(sheet, pd.core.frame.DataFrame)
     assert not sheet.empty
+    assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
 
     cindexer = {}  # City indexer
     cnames = list(sheet.columns)
@@ -78,6 +81,7 @@ def create_city_dataframes(pflag=0, cities=cities):
     assert pflag == 0 or pflag == 1
     assert isinstance(cities, dict)
     assert all(isinstance(cities[state], list) for state in cities.keys())
+    assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
 
     datasets, years = get_xls()
     filled_frames = create_empty_city_dataframes()
