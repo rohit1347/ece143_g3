@@ -109,15 +109,18 @@ def create_city_dataframes(pflag=0, cities=cities):
     if pflag:
         # Prints the filled dataframe
         print(filled_frames)
+    return filled_frames
 
+
+# %% Plotting
+transportation = create_city_dataframes()
+sd =
 
 # %% Testing
 start = time.time()
 create_city_dataframes(pflag=1)
 end = time.time()
 print(end-start)
-# %% Plotting
-
 
 # %%
 # datasets = get_xls()

@@ -98,3 +98,4 @@ def create_city_dataframes(pflag=0, cities=cities):
     if pflag:
         # Prints the filled dataframe
         print(filled_frames)
+    return filled_frames
