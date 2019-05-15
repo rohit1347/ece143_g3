@@ -8,13 +8,11 @@ import matplotlib.pyplot as plt
 import string
 from ProjectWorkspace import *
 
-plt.style.use('classic')
-
-# %%
+# plt.style.use('classic')
 
 
 def get_xls(pflag=0):
-    """Returns a list of Excel files found and for what years.
+    """Returns list of Excel files found and for what years.
 
     Keyword Arguments:
         pflag {int} -- Print flag (default: {0})
@@ -42,23 +40,39 @@ def create_empty_city_dataframes(cities=cities):
     """
     assert isinstance(cities, dict)
     assert all(isinstance(cities[state], list) for state in cities.keys())
-    # total_cities = 0
-    # for state in cities.keys():
-    #     total_cities += len(cities[state])
-    # dataframe_list = [None] * total_cities
     dataframe_dict = dict()
     for state in cities.keys():
         dataframe_dict[state] = [None]*len(cities[state])
         for cix, city in enumerate(cities[state]):
             dataframe_dict[state][cix] = pd.DataFrame(
                 columns=col_index_names, index=get_xls()[-1])
-    # for idx in range(total_cities):
-    #     dataframe_list[idx] = pd.DataFrame(columns=col_index_names)
-    print('Created dataframes list')
+    print('Created empty dataframes dict')
     return dataframe_dict
 
 
-# %%
+def get_city_indices(cities=cities, sheet=pd.DataFrame()):
+    """Returns indices for cities in a pandas dataframe. Function must be called inside `create_city_dataframes()` for now.
+
+    Keyword Arguments:
+        cities {dict} -- To be imported from ProjectWorkspace (default: {cities})
+        sheet {pandas dataframe} -- Dataframe in which indices are to be found. (default: {sheet})
+    """
+    assert isinstance(cities, dict)
+    assert all(isinstance(cities[state], list) for state in cities.keys())
+    assert isinstance(sheet, pd.core.frame.DataFrame)
+    assert not sheet.empty
+
+    cindexer = {}  # City indexer
+    cnames = list(sheet.columns)
+    for state in cities.keys():
+        cindexer[state] = list()
+        for city in cities[state]:
+            truevals = sheet[cnames[0]].str.contains(city)
+            temp_index = [i for i, x in enumerate(truevals) if x][-1]
+            cindexer[state].append(temp_index)
+    return(cindexer)
+
+
 def create_city_dataframes(pflag=0, cities=cities):
     assert isinstance(pflag, int)
     assert pflag == 0 or pflag == 1
@@ -67,22 +81,31 @@ def create_city_dataframes(pflag=0, cities=cities):
 
     datasets, years = get_xls()
     filled_frames = create_empty_city_dataframes()
-    for excel in datasets:
+    for di, excel in enumerate(datasets):
         sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
         cnames = list(sheet.columns)
-        if pflag:
-            # Prints the columns found in each excel file
-            print(f'Columns in {excel}: {cnames}\n')
-        cindexer = get_city_indices()
-        for citynum, cframe in enumerate(filled_frames):
-            # What is left:
-            # (i) You are in a sheet
-            # (ii) you have the row indices for the cities in the sheet
-            # (iii) You need to find the column indices for the data you want
-            # (iv) Store the data in one column of the dataframe
+        cindexer = get_city_indices(sheet=sheet)
+        for state in filled_frames.keys():
+            for ix, city_df in enumerate(filled_frames[state]):
+                data = []
+                index = zip([cindexer[state][ix]] * len(col_index), col_index)
+                index = list(index)
+                for coord in index:
+                    data.append(sheet.iloc[coord[0]][coord[1]])
+                city_df.loc[years[di]] = data
+    if pflag:
+        # Prints the filled dataframe
+        print(f'Columns in {excel}: {cnames}\n')
+        print(filled_frames)
 
 
-datasets = get_xls()
+# %% Testing
+create_city_dataframes(pflag=1)
+
+
+# %%
+# datasets = get_xls()
+datasets = ['2008_Fact_Book_Appendix_B.xls']
 dataset_index = dict()
 for excel in datasets:
     sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
@@ -99,33 +122,8 @@ for excel in datasets:
     dataset_index[excel] = cindexer
 print(dataset_index)
 
-# %%
-
-
-def get_city_indices(cities=cities, sheet=sheet):
-    """Returns indices for cities in a pandas dataframe. Function must be called inside `create_city_dataframes()` for now.
-
-    Keyword Arguments:
-        cities {dict} -- To be imported from ProjectWorkspace (default: {cities})
-        sheet {pandas dataframe} -- Dataframe in which indices are to be found. (default: {sheet})
-    """
-    assert isinstance(cities, dict)
-    assert all(isinstance(cities[state], list) for state in cities.keys())
-    assert sheet.__name__ == 'pandas.core.frame.DataFrame'
-    cindexer = {}  # City indexer
-    cnames = list(sheet.columns)
-    for state in cities.keys():
-        cindexer[state] = list()
-        for city in cities[state]:
-            truevals = sheet[cnames[0]].str.contains(city)
-            temp_index = [i for i, x in enumerate(truevals) if x][-1]
-            cindexer[state].append(temp_index)
-    return(cindexer)
-
 
 # %%
 plt.style.use('seaborn-whitegrid')
 apta2007.plot(
     kind='line', x=apta2007.iloc[0][0], y=apta2007.iloc[0][1])
-# %% Testing
-create_empty_city_dataframes()
