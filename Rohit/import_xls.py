@@ -106,11 +106,12 @@ def create_city_dataframes(pflag=0, cities=cities):
         cindexer = get_city_indices(sheet=sheet)
         for state in filled_frames.keys():
             for ix, city_df in enumerate(filled_frames[state]):
-                if len(cnames) > 14 and not col_index[1] == 3:
-                    for i in range(1, len(col_index)):
-                        col_index[i] += 1
+                ci = col_index
+                if len(cnames) > 14 and ci[1] != 3:
+                    for i in range(1, len(ci)):
+                        ci[i] += 1
                 data = []
-                index = zip([cindexer[state][ix]] * len(col_index), col_index)
+                index = zip([cindexer[state][ix]] * len(ci), ci)
                 index = list(index)
                 for coord in index:
                     data.append(sheet.iloc[coord[0]][coord[1]])
@@ -126,9 +127,9 @@ start = time.time()
 transportation = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start}')
-sd = transportation['CA'][0]
-# %% Plotting
 
+# %% Plotting
+sd = transportation['CA'][1]
 for column in sd.columns:
     plt.plot(sd.index, sd[column])
     plt.title(f'San Diego - {column}')
