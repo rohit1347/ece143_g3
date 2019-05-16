@@ -115,6 +115,8 @@ def create_city_dataframes(pflag=0, cities=cities):
                 index = list(index)
                 for coord in index:
                     data.append(sheet.iloc[coord[0]][coord[1]])
+                if years[di] > 2008 and years[di] < 2017:
+                    data[3:] = [x*1000 for x in data[3:]]
                 city_df.loc[years[di]] = data
     if pflag:
         # Prints the filled dataframe
