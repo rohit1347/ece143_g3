@@ -107,10 +107,6 @@ def create_city_dataframes(pflag=0, cities=cities):
         for state in filled_frames.keys():
             for ix, city_df in enumerate(filled_frames[state]):
                 ci = col_index2 if len(cnames) == 15 else col_index
-                # if len(cnames) == 15 and ci[1] == 2:
-                #     ci = col_index2
-                # elif len(cnames) == 14 and ci[1] == 3:
-                #     ci = col_index
                 data = []
                 index = zip([cindexer[state][ix]] * len(ci), ci)
                 index = list(index)
