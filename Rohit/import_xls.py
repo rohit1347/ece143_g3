@@ -29,6 +29,7 @@ def get_xls(pflag=0):
     years = []
     for year in datasets:
         years.append(int(''.join([y for y in list(year) if y.isdigit()])))
+    years = list(sorted(set(years)))
     if pflag:
         print(f'Excel files found= {datasets}\n')
         print(f'Years= {years}\n')
@@ -97,11 +98,17 @@ def create_city_dataframes(pflag=0, cities=cities):
     datasets, years = get_xls()
     filled_frames = create_empty_city_dataframes()
     for di, excel in enumerate(datasets):
-        sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
+        sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=2)
         cnames = list(sheet.columns)
+        if pflag:
+            print(len(sheet.columns))
+
         cindexer = get_city_indices(sheet=sheet)
         for state in filled_frames.keys():
             for ix, city_df in enumerate(filled_frames[state]):
+                if len(cnames) > 14 and not col_index[1] == 3:
+                    for i in range(1, len(col_index)):
+                        col_index[i] += 1
                 data = []
                 index = zip([cindexer[state][ix]] * len(col_index), col_index)
                 index = list(index)
@@ -130,12 +137,12 @@ for column in sd.columns:
     plt.show()
 # %%
 # datasets = get_xls()
-datasets = ['2008_Fact_Book_Appendix_B.xls']
+datasets = ['2009_Fact_Book_Appendix_B.xlsx']
 dataset_index = dict()
 for excel in datasets:
-    sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
+    sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=2)
     cnames = list(sheet.columns)
-    print(cnames[0])
+    print(len(cnames))
 
     cindexer = {}  # City indexer
     for state in cities.keys():
@@ -146,3 +153,6 @@ for excel in datasets:
             cindexer[state].append(temp_index)
     dataset_index[excel] = cindexer
 print(dataset_index)
+
+
+# %%
