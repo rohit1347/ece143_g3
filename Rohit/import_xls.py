@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import string
 from ProjectWorkspace import *
 assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
-%matplotlib inline
+# %matplotlib inline
 # plt.style.use('classic')
 plt.style.use('fivethirtyeight')
 
@@ -28,7 +28,7 @@ def get_xls(pflag=0):
     datasets = sorted(datasets)
     years = []
     for year in datasets:
-        years.append(int(''.join([y for y in list(year) if y.isdigit()])))
+        years.append(int(''.join([y for y in list(year) if y.isdigit()]))-2)
     years = list(sorted(set(years)))
     if pflag:
         print(f'Excel files found= {datasets}\n')
@@ -112,7 +112,7 @@ def create_city_dataframes(pflag=0, cities=cities):
                 index = list(index)
                 for coord in index:
                     data.append(sheet.iloc[coord[0]][coord[1]])
-                if years[di] > 2008 and years[di] < 2017:
+                if years[di] > 2006 and years[di] < 2015:
                     data[3:] = [x*1000 for x in data[3:]]
                 city_df.loc[years[di]] = data
     if pflag:
@@ -128,10 +128,11 @@ end = time.time()
 print(f'Time to compute dataframes: {end-start}')
 
 # %% Plotting
-sd = transportation['CA'][0]
+city = 'NY'
+sd = transportation[city][0]
 for column in sd.columns:
     plt.plot(sd.index, sd[column])
-    plt.title(f'San Diego - {column}')
+    plt.title(f'{city} - {column}')
     plt.xlabel('Year')
     plt.ylabel(column)
     plt.show()
