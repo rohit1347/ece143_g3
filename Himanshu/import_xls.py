@@ -23,7 +23,7 @@ dataset_index = dict()
 for excel in datasets:
     sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=3)
     cnames = list(sheet.columns)
-    print(cnames[0])
+#     print(cnames[0])
     cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IN': ['Chicago'], 'MI': ['Detroit'],
               'GA': ['Atlanta'], 'FL': ['Miami', 'Orlando'], 'AZ': ['Phoenix'], 'PA': ['Philadelphia', 'Pittsburgh'], 'WI': ['Milwaukee', 'Madison'], 'CO': ['Denver'], 'NV': ['Las Vegas'], 'UT': ['Salt Lake City']}
     cindexer = {}  # City indexer
@@ -35,6 +35,9 @@ for excel in datasets:
             cindexer[state].append(temp_index)
     dataset_index[excel] = cindexer
 print(dataset_index)
+
+# %%
+
 # %%
 plt.style.use('seaborn-whitegrid')
 apta2007.plot(
