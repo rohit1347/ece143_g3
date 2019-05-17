@@ -11,7 +11,6 @@ from ProjectWorkspace import *
 assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
 %matplotlib inline
 plt.style.use('fivethirtyeight')
-# plt.rcParams['figure.facecolor'] = 'white'
 
 
 def get_xls(pflag=0):
@@ -155,7 +154,8 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
 
     Keyword Arguments:
         ttype {list} -- Choose type of transform. Can obtain multiple transforms by adding options to list (default: {[0]}).
-    ttype Options:
+
+    `ttype` Options:
         0 -- Per 1000 people
         1 -- Per person
     """
@@ -192,7 +192,7 @@ sd = tp["CA"][0]
 h = next(transform_city_dataframes(tp, ttype=[1]))
 
 # %% Plotting
-get_simple_plots(h, state='NY')
+get_simple_plots(tp, state='NY')
 
 # %%
 # datasets = get_xls()
