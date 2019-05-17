@@ -9,8 +9,9 @@ import matplotlib.pyplot as plt
 import string
 from ProjectWorkspace import *
 assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
-# %matplotlib inline
+%matplotlib inline
 plt.style.use('fivethirtyeight')
+# plt.rcParams['figure.facecolor'] = 'white'
 
 
 def get_xls(pflag=0):
@@ -112,7 +113,8 @@ def create_city_dataframes(pflag=0, cities=cities):
                 for coord in index:
                     data.append(sheet.iloc[coord[0]][coord[1]])
                 if years[di] > 2006 and years[di] < 2015:
-                    data[3:] = [x*1000 for x in data[3:]]
+                    data[3:] = [x * 1000 for x in data[3:]]
+                data = pd.to_numeric(data)
                 city_df.loc[years[di]] = data
     if pflag:
         # Prints the filled dataframe
@@ -134,8 +136,10 @@ def get_simple_plots(filled_frames, state='CA', city_index=0):
     assert isinstance(filled_frames, dict)
     assert isinstance(filled_frames[state]
                       [city_index], pd.core.frame.DataFrame)
+    assert 'matplotlib' in sys.modules
     df_to_plot = filled_frames[state][city_index]
     for column in df_to_plot.columns:
+        plt.figure(figsize=(8, 6), dpi=80, facecolor='w', edgecolor='k')
         plt.plot(df_to_plot.index, df_to_plot[column])
         plt.title(f'{cities[state][city_index]} - {column}')
         plt.xlabel('Year')
@@ -143,14 +147,53 @@ def get_simple_plots(filled_frames, state='CA', city_index=0):
         plt.show()
 
 
+def transform_city_dataframes(filled_frames, ttype=[0]):
+    """Generator for returning transformed city transportation data.
+
+    Arguments:
+        filled_frames {dict} -- Dictionary containing city data.
+
+    Keyword Arguments:
+        ttype {list} -- Choose type of transform. Can obtain multiple transforms by adding options to list (default: {[0]}).
+    ttype Options:
+        0 -- Per 1000 people
+        1 -- Per person
+    """
+    assert isinstance(ttype, list)
+    assert all(isinstance(obj, int) for obj in ttype)
+    assert isinstance(filled_frames, dict)
+    mdf = filled_frames
+    # Modified dataframe
+    for tix, ty in enumerate(ttype):
+        if ty == 0:
+            # For per 1000 people calculation, value/pop*1000
+            for state in mdf.keys():
+                for city, df in enumerate(mdf[state]):
+                    df.columns = col_index_names1000
+                    df.iloc[:, 1:] = df.iloc[:, 1:].div(1/1000).div(
+                        df.iloc[:, 0], axis='index')
+        if ty == 1:
+            for state in mdf.keys():
+                for city, df in enumerate(mdf[state]):
+                    df.columns = col_index_names_p
+                    df.iloc[:, 1:] = df.iloc[:, 1:].div(
+                        df.iloc[:, 0], axis='index')
+        yield mdf
+
+
 # %%
 start = time.time()
-transportation = create_city_dataframes()
+tp = create_city_dataframes()
 end = time.time()
-print(f'Time to compute dataframes: {end-start}')
+print(f'Time to compute dataframes: {end-start:.2f}')
+sd = tp["CA"][0]
+
+# %%
+h = next(transform_city_dataframes(tp, ttype=[1]))
 
 # %% Plotting
-get_simple_plots(transportation)
+get_simple_plots(h, state='NY')
+
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
