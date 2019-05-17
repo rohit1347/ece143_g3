@@ -10,7 +10,6 @@ import string
 from ProjectWorkspace import *
 assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
 # %matplotlib inline
-# plt.style.use('classic')
 plt.style.use('fivethirtyeight')
 
 
@@ -121,6 +120,29 @@ def create_city_dataframes(pflag=0, cities=cities):
     return filled_frames
 
 
+def get_simple_plots(filled_frames, state='CA', city_index=0):
+    """Gives simple plots for specified city.
+
+    Arguments:
+        filled_frames {dict} -- Dictionary containing the relevant data for all cities.
+        Specify `Matplotlib` style and magic commands before the function, if needed.
+
+    Keyword Arguments:
+        state {str} -- Specify which state the city is in (default: {'CA'})
+        city_index {int} -- Look up the index for cities in the dictionary `cities` (default: {0})
+    """
+    assert isinstance(filled_frames, dict)
+    assert isinstance(filled_frames[state]
+                      [city_index], pd.core.frame.DataFrame)
+    df_to_plot = filled_frames[state][city_index]
+    for column in df_to_plot.columns:
+        plt.plot(df_to_plot.index, df_to_plot[column])
+        plt.title(f'{cities[state][city_index]} - {column}')
+        plt.xlabel('Year')
+        plt.ylabel(column)
+        plt.show()
+
+
 # %%
 start = time.time()
 transportation = create_city_dataframes()
@@ -128,14 +150,7 @@ end = time.time()
 print(f'Time to compute dataframes: {end-start}')
 
 # %% Plotting
-city = 'NY'
-sd = transportation[city][0]
-for column in sd.columns:
-    plt.plot(sd.index, sd[column])
-    plt.title(f'{city} - {column}')
-    plt.xlabel('Year')
-    plt.ylabel(column)
-    plt.show()
+get_simple_plots(transportation)
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
