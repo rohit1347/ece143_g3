@@ -50,6 +50,7 @@ def create_empty_city_dataframes(cities=cities, pflag=0):
         for cix, city in enumerate(cities[state]):
             dataframe_dict[state][cix] = pd.DataFrame(
                 columns=col_index_names, index=get_xls()[-1])
+            dataframe_dict[state][cix].index.name = 'Year'
     if pflag:
         print('Created empty dataframes dict')
     return dataframe_dict
