@@ -233,10 +233,10 @@ def plotly_transportation():
     )
     fig['layout']['legend'].update({'x': 0})
     fig['layout']['annotations'][0].update({'x': -0.12, 'xanchor': 'left'})
+    return fig
 
 
-plotly_transportation()
-py.iplot(fig, filename='transportation')
+py.iplot(plotly_transportation(), filename='transportation')
 
 
 # %%
