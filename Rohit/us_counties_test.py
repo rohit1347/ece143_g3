@@ -5,6 +5,7 @@ from bokeh.sampledata.us_counties import data as counties
 from bokeh.sampledata.us_states import data as states
 from bokeh.sampledata.unemployment import data as unemployment
 import plotly.plotly as py
+import plotly
 import plotly.figure_factory as ff
 
 import pandas as pd
@@ -88,33 +89,35 @@ output_file("texas.html")
 show(p)
 
 # %%
-NE_states = ['Connecticut', 'Maine', 'Massachusetts',
-             'New Hampshire', 'Rhode Island', 'Vermont']
+plotly.tools.set_credentials_file(
+    username='rohit1347', api_key='wP0wJffd8666ba1iS6CT')
+plotly.tools.set_config_file(world_readable=True, sharing='public')
 df_sample = pd.read_csv(
-    'https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv')
-df_sample_r = df_sample[df_sample['STNAME'].isin(NE_states)]
+    'https://raw.githubusercontent.com/plotly/datasets/master/laucnty16.csv')
+df_sample['State FIPS Code'] = df_sample['State FIPS Code'].apply(
+    lambda x: str(x).zfill(2))
+df_sample['County FIPS Code'] = df_sample['County FIPS Code'].apply(
+    lambda x: str(x).zfill(3))
+df_sample['FIPS'] = df_sample['State FIPS Code'] + \
+    df_sample['County FIPS Code']
 
-values = df_sample_r['TOT_POP'].tolist()
-fips = df_sample_r['FIPS'].tolist()
-
-colorscale = [
-    'rgb(68.0, 1.0, 84.0)',
-    'rgb(66.0, 64.0, 134.0)',
-    'rgb(38.0, 130.0, 142.0)',
-    'rgb(63.0, 188.0, 115.0)',
-    'rgb(216.0, 226.0, 25.0)'
-]
+colorscale = ["#f7fbff", "#ebf3fb", "#deebf7", "#d2e3f3", "#c6dbef", "#b3d2e9", "#9ecae1",
+              "#85bcdb", "#6baed6", "#57a0ce", "#4292c6", "#3082be", "#2171b5", "#1361a9",
+              "#08519c", "#0b4083", "#08306b"]
+endpts = list(np.linspace(1, 12, len(colorscale) - 1))
+fips = df_sample['FIPS'].tolist()
+values = df_sample['Unemployment Rate (%)'].tolist()
 
 fig = ff.create_choropleth(
     fips=fips, values=values,
-    scope=NE_states, county_outline={
-        'color': 'rgb(255,255,255)', 'width': 0.5},
-    legend_title='Population per county'
-
+    binning_endpoints=endpts,
+    colorscale=colorscale,
+    show_state_data=False,
+    show_hover=True, centroid_marker={'opacity': 0},
+    asp=2.9, title='USA by Unemployment %',
+    legend_title='% unemployed'
 )
-fig['layout']['legend'].update({'x': 0})
-fig['layout']['annotations'][0].update({'x': -0.12, 'xanchor': 'left'})
-py.iplot(fig, filename='choropleth_new_england')
+py.iplot(fig, filename='choropleth_full_usa')
 # %%
 plotly.tools.set_credentials_file(
     username='rohit1347', api_key='wP0wJffd8666ba1iS6CT')

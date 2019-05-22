@@ -12,5 +12,7 @@ col_index_names_p = ['Urban Population', 'Vehicles in Service (per person)', 'Ve
                      'Vehicle Revenue Miles (per person)', 'Vehicle Revenue Hours (per person)', 'Unlinked Passenger Trips (per person)', 'Passenger Miles (per person)']
 states_fips = {'CA': 6, 'WA': 53, 'TX': 48, 'NY': 36, 'IL': 17, 'MI': 26,
                'GA': 13, 'FL': 12, 'AZ': 4, 'PA': 42, 'WI': 55, 'CO': 8, 'NV': 32, 'UT': 49, 'MA': 25, 'DC': 11001, 'HW': 15, 'MN': 27}
-cities_fips = {'CA': ['073', '075', '037'], 'WA': ['269'], 'TX': ['015', '225', '047'], 'NY': ['061'], 'IL': ['031'], 'MI': ['153'],
-               'GA': ['049'], 'FL': ['121', '361'], 'AZ': ['013'], 'PA': ['101', '003'], 'WI': ['079', '087'], 'CO': ['031'], 'NV': ['033'], 'UT': ['035'], 'MA': ['025'], 'DC': ['11001'], 'HW': ['003'], 'MN': ['053']}
+cities_fips = {'CA': ['06073', '06075', '06037'], 'WA': ['53033'], 'TX': ['48015', '01069', '01047'], 'NY': ['36061'], 'IL': ['17031'], 'MI': ['26163'],
+               'GA': ['13121'], 'FL': ['18103', '12095'], 'AZ': ['04013'], 'PA': ['42101', '42003'], 'WI': ['55079', '55087'], 'CO': ['08031'], 'NV': ['32033'], 'UT': ['49035'], 'MA': ['25025'], 'DC': ['11001'], 'HW': ['15003'], 'MN': ['27053']}
+states = ['California', 'Washington', 'Texas', 'New York', 'illinois', 'Michigan', 'Georgia',
+          'Florida', 'Arizona', 'Pennsylvania', 'Wisconsin', 'Colorado', 'Nevada', 'Utah', 'Massachusetts', 'Hawaii', 'Minnesota']

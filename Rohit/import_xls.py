@@ -1,4 +1,8 @@
 # %%
+from ProjectWorkspace import *
+import plotly.figure_factory as ff
+import plotly
+import plotly.plotly as py
 import time
 import os
 import collections
@@ -7,10 +11,10 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import string
-from ProjectWorkspace import *
-assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
+import itertools as it
 %matplotlib inline
 plt.style.use('fivethirtyeight')
+# %%
 
 
 def get_xls(pflag=0):
@@ -194,6 +198,46 @@ h = next(transform_city_dataframes(tp, ttype=[1]))
 
 # %% Plotting
 get_simple_plots(tp, state='NY')
+# %%
+
+
+def plotly_transportation():
+    plotly.tools.set_credentials_file(
+        username='rohit1347', api_key='wP0wJffd8666ba1iS6CT')
+    plotly.tools.set_config_file(world_readable=True, sharing='public')
+    df = create_city_dataframes()
+    df = next(transform_city_dataframes(df, ttype=[0]))
+    COUNTIES = []
+    values = []
+    fips = []
+    idx = 1
+    for state in df.keys():
+        for county in range(len(df[state])):
+            values.append(df[state][county].iloc[0, idx])
+            COUNTIES.append(cities[state][county])
+            fips.append(int(cities_fips[state][county]))
+
+    colorscale = [
+        'rgb(68.0, 1.0, 84.0)',
+        'rgb(66.0, 64.0, 134.0)',
+        'rgb(38.0, 130.0, 142.0)',
+        'rgb(63.0, 188.0, 115.0)',
+        'rgb(216.0, 226.0, 25.0)'
+    ]
+
+    fig = ff.create_choropleth(
+        fips=fips, values=values, county_outline={
+            'color': 'rgb(255,255,255)', 'width': 0.5},
+        legend_title=df[state][county].columns[idx]
+
+    )
+    fig['layout']['legend'].update({'x': 0})
+    fig['layout']['annotations'][0].update({'x': -0.12, 'xanchor': 'left'})
+
+
+plotly_transportation()
+py.iplot(fig, filename='transportation')
+
 
 # %%
 # datasets = get_xls()
