@@ -186,21 +186,6 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
         yield mdf
 
 
-# %%
-start = time.time()
-tp = create_city_dataframes()
-end = time.time()
-print(f'Time to compute dataframes: {end-start:.2f}')
-sd = tp["CA"][0]
-
-# %%
-h = next(transform_city_dataframes(tp, ttype=[1]))
-
-# %% Plotting
-get_simple_plots(tp, state='NY')
-# %%
-
-
 def plotly_transportation():
     plotly.tools.set_credentials_file(
         username='rohit1347', api_key='wP0wJffd8666ba1iS6CT')
@@ -225,17 +210,26 @@ def plotly_transportation():
         'rgb(216.0, 226.0, 25.0)'
     ]
 
-    fig = ff.create_choropleth(
-        fips=fips, values=values, county_outline={
-            'color': 'rgb(255,255,255)', 'width': 0.5},
-        legend_title=df[state][county].columns[idx]
-
-    )
+    fig = ff.create_choropleth(fips=fips, values=values, county_outline={
+                               'color': 'rgb(255,255,255)', 'width': 0.5}, legend_title=df[state][county].columns[idx])
     fig['layout']['legend'].update({'x': 0})
     fig['layout']['annotations'][0].update({'x': -0.12, 'xanchor': 'left'})
     return fig
 
 
+# %%
+start = time.time()
+tp = create_city_dataframes()
+end = time.time()
+print(f'Time to compute dataframes: {end-start:.2f}')
+sd = tp["CA"][0]
+
+# %%
+h = next(transform_city_dataframes(tp, ttype=[1]))
+
+# %% Plotting
+get_simple_plots(tp, state='NY')
+# %%
 py.iplot(plotly_transportation(), filename='transportation')
 
 
