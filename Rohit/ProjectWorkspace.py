@@ -1,5 +1,5 @@
-cities = {'CA': ['San Diego', 'San Francisco', 'Los Angeles'], 'WA': ['Seattle'], 'TX': ['Austin', 'Houston', 'Dallas'], 'NY': ['New York'], 'IL': ['Chicago'], 'MI': ['Detroit'],
-          'GA': ['Atlanta'], 'FL': ['Miami', 'Orlando'], 'AZ': ['Phoenix'], 'PA': ['Philadelphia', 'Pittsburgh'], 'WI': ['Milwaukee', 'Madison'], 'CO': ['Denver'], 'NV': ['Las Vegas'], 'UT': ['Salt Lake City'], 'MA': ['Boston'], 'DC': ['Washington, DC'], 'HW': ['Honolulu'], 'MN': ['Minneapolis']}
+cities = {'California': ['San Diego', 'San Francisco', 'Los Angeles'], 'Washington': ['Seattle'], 'Texas': ['Austin', 'Houston', 'Dallas'], 'New York': ['New York'], 'Illinois': ['Chicago'], 'Michigan': ['Detroit'],
+          'Georgia': ['Atlanta'], 'Florida': ['Miami', 'Orlando'], 'Arizona': ['Phoenix'], 'Pennsylvania': ['Philadelphia', 'Pittsburgh'], 'Wisconsin': ['Milwaukee', 'Madison'], 'Colorado': ['Denver'], 'Nevada': ['Las Vegas'], 'Utah': ['Salt Lake City'], 'Massachusetts': ['Boston'], 'Washington, DC': ['Washington, DC'], 'Hawaii': ['Honolulu'], 'Minnesota': ['Minneapolis']}
 col_index = [1, 2, 4, 6, 8, 10, 12]
 # Column indices for US county data
 col_index2 = [1, 3, 5, 7, 9, 11, 13]
@@ -10,9 +10,7 @@ col_index_names1000 = ['Urban Population', 'Vehicles in Service (per 1000 person
                        'Vehicle Revenue Miles (per 1000 persons)', 'Vehicle Revenue Hours (per 1000 persons)', 'Unlinked Passenger Trips (per 1000 persons)', 'Passenger Miles (per 1000 persons)']
 col_index_names_p = ['Urban Population', 'Vehicles in Service (per person)', 'Vehicles Available (per person)',
                      'Vehicle Revenue Miles (per person)', 'Vehicle Revenue Hours (per person)', 'Unlinked Passenger Trips (per person)', 'Passenger Miles (per person)']
-states_fips = {'CA': 6, 'WA': 53, 'TX': 48, 'NY': 36, 'IL': 17, 'MI': 26,
-               'GA': 13, 'FL': 12, 'AZ': 4, 'PA': 42, 'WI': 55, 'CO': 8, 'NV': 32, 'UT': 49, 'MA': 25, 'DC': 11001, 'HW': 15, 'MN': 27}
-cities_fips = {'CA': ['06073', '06075', '06037'], 'WA': ['53033'], 'TX': ['48015', '01069', '01047'], 'NY': ['36061'], 'IL': ['17031'], 'MI': ['26163'],
-               'GA': ['13121'], 'FL': ['18103', '12095'], 'AZ': ['04013'], 'PA': ['42101', '42003'], 'WI': ['55079', '55087'], 'CO': ['08031'], 'NV': ['32033'], 'UT': ['49035'], 'MA': ['25025'], 'DC': ['11001'], 'HW': ['15003'], 'MN': ['27053']}
-states = ['California', 'Washington', 'Texas', 'New York', 'illinois', 'Michigan', 'Georgia',
-          'Florida', 'Arizona', 'Pennsylvania', 'Wisconsin', 'Colorado', 'Nevada', 'Utah', 'Massachusetts', 'Hawaii', 'Minnesota']
+states_fips = {'California': 6, 'Washington': 53, 'Texas': 48, 'New York': 36, 'Illinois': 17, 'Michigan': 26,
+               'Georgia': 13, 'Florida': 12, 'Arizona': 4, 'Pennsylvania': 42, 'Wisconsin': 55, 'Colorado': 8, 'Nevada': 32, 'Utah': 49, 'Massachusetts': 25, 'Washington, DC': 11001, 'Hawaii': 15, 'Minnesota': 27}
+cities_fips = {'California': ['06073', '06075', '06037'], 'Washington': ['53033'], 'Texas': ['48015', '48225', '48113'], 'New York': ['36061'], 'Illinois': ['17031'], 'Michigan': ['26163'],
+               'Georgia': ['13121'], 'Florida': ['18103', '12095'], 'Arizona': ['04013'], 'Pennsylvania': ['42101', '42003'], 'Wisconsin': ['55079', '55087'], 'Colorado': ['08031'], 'Nevada': ['32033'], 'Utah': ['49035'], 'Massachusetts': ['25025'], 'Washington, DC': ['11001'], 'Hawaii': ['15003'], 'Minnesota': ['27053']}

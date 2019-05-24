@@ -126,7 +126,7 @@ def create_city_dataframes(pflag=0, cities=cities):
     return filled_frames
 
 
-def get_simple_plots(filled_frames, state='CA', city_index=0):
+def get_simple_plots(filled_frames, state='California', city_index=0):
     """Gives simple plots for specified city.
 
     Arguments:
@@ -134,7 +134,7 @@ def get_simple_plots(filled_frames, state='CA', city_index=0):
         Specify `Matplotlib` style and magic commands before the function, if needed.
 
     Keyword Arguments:
-        state {str} -- Specify which state the city is in (default: {'CA'})
+        state {str} -- Specify which state the city is in (default: {'California'})
         city_index {int} -- Look up the index for cities in the dictionary `cities` (default: {0})
     """
     assert isinstance(filled_frames, dict)
@@ -186,22 +186,31 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
         yield mdf
 
 
-def plotly_transportation():
+def plotly_transportation(df, state='California', tflag=0, ttype=0):
+    """Create Choropleth for US States
+
+    Arguments:
+        df {pd dataframe} -- Filled frames
+
+    Keyword Arguments:
+        state {str} -- Full state name, ex 'Washington, DC' (default: {'California'})
+        tflag {int} -- Transform flag (default: {0})
+        ttype {int} -- Transform type, checl `transform_city_dataframes` for transform types (default: {0})
+    """
     plotly.tools.set_credentials_file(
         username='rohit1347', api_key='wP0wJffd8666ba1iS6CT')
     plotly.tools.set_config_file(world_readable=True, sharing='public')
-    df = create_city_dataframes()
-    df = next(transform_city_dataframes(df, ttype=[0]))
+    if tflag:
+        df = next(transform_city_dataframes(df, ttype=[ttype]))
     COUNTIES = []
     values = []
     fips = []
     idx = 1
-    for state in df.keys():
-        for county in range(len(df[state])):
-            values.append(df[state][county].iloc[0, idx])
-            COUNTIES.append(cities[state][county])
-            fips.append(int(cities_fips[state][county]))
-
+    for ix, county in enumerate(df[state]):
+        COUNTIES.append(county)
+        values.append(df[state][ix].iloc[0, idx])
+        fips.append(int(cities_fips[state][ix]))
+    assert len(values) == len(fips)
     colorscale = [
         'rgb(68.0, 1.0, 84.0)',
         'rgb(66.0, 64.0, 134.0)',
@@ -210,8 +219,8 @@ def plotly_transportation():
         'rgb(216.0, 226.0, 25.0)'
     ]
 
-    fig = ff.create_choropleth(fips=fips, values=values, county_outline={
-                               'color': 'rgb(255,255,255)', 'width': 0.5}, legend_title=df[state][county].columns[idx])
+    fig = ff.create_choropleth(fips=fips, values=values, scope=[state],
+                               state_outline={'width': 1, 'color': 'rgb(127,127,127)'}, county_outline={'color': 'rgb(127,127,127)', 'width': 0.75}, legend_title=df[state][0].columns[idx])
     fig['layout']['legend'].update({'x': 0})
     fig['layout']['annotations'][0].update({'x': -0.12, 'xanchor': 'left'})
     return fig
@@ -222,15 +231,16 @@ start = time.time()
 tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
-sd = tp["CA"][0]
+sd = tp["California"][0]
 
 # %%
 h = next(transform_city_dataframes(tp, ttype=[1]))
 
 # %% Plotting
-get_simple_plots(tp, state='NY')
+get_simple_plots(tp, state='New York')
 # %%
-py.iplot(plotly_transportation(), filename='transportation')
+# plotly_transportation(tp)
+py.iplot(plotly_transportation(tp, state='Pennsylvania'), filename='transportation')
 
 
 # %%
