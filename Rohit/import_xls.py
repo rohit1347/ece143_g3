@@ -11,6 +11,9 @@ import string
 from bokeh.plotting import figure, show, output_file
 from bokeh.sampledata.us_counties import data as counties
 from bokeh.sampledata.us_states import data as states
+from bokeh.palettes import Greys256 as palette
+from bokeh.layouts import column, row, widgetbox
+from bokeh.models import CustomJS, Slider, Toggle
 # For Hover
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
@@ -189,16 +192,17 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
 # %%
 
 
-def create_bokeh_choro(ff, prop=1, year=0):
+def create_bokeh_choro(ff, prop=0, year=0):
     assert isinstance(prop, int)
     assert isinstance(year, int)
-    assert len(ff['CA'][0].columns) > prop > 0
+    assert len(ff['CA'][0].columns) > prop >= 0
     assert len(ff['CA'][0].index) > year >= 0
     try:
         # del states["HI"]
         del states["AK"]
     except:
         pass
+    nyears = len(ff['CA'][0].index)
     state_xs = [states[code]["lons"] for code in states]
     state_ys = [states[code]["lats"] for code in states]
     county_xs = []
@@ -211,25 +215,30 @@ def create_bokeh_choro(ff, prop=1, year=0):
             county_ys.append([counties[code]["lats"]
                               for code in counties if counties[code]["detailed name"] == dname][0])
             district_name.append(dname)
-
-    colors = ["#F1EEF6", "#D4B9DA", "#C994C7", "#DF65B0", "#DD1C77", "#980043"]
-
-    county_colors = []
-    # %%
-    color_mapper = LogColorMapper(palette=colors)
+    if isinstance(palette, dict):
+        color_mapper = LogColorMapper(
+            palette=palette[list(palette.keys())[-1]])
+    else:
+        color_mapper = LogColorMapper(palette=palette)
     pvalues = []
-    for state in states.keys():
-        if state in ff.keys():
-            for cs in ff[state]:
-                pvalues.append(cs.iloc[year, prop])
 
+    for _ in range(nyears):
+        yvalues = []
+        for state in ff.keys():
+            for cs in ff[state]:
+                yvalues.append(cs.iloc[year, prop])
+        pvalues.append(yvalues)
+
+    alldat = {str(i): v for i, v in enumerate(pvalues)}
+    print(alldat)
     source = ColumnDataSource(data=dict(
         x=county_xs, y=county_ys,
-        name=district_name, pvalue=pvalues,
-    ))
+        name=district_name, pvalue=pvalues[year], **alldat))
     TOOLS = "pan,wheel_zoom,reset,hover,save"
     p = figure(title=f"US Transportation for Year={ff['CA'][0].index[year]}", tools=TOOLS, plot_width=1800,
                plot_height=700, x_axis_location=None, y_axis_location=None)
+    p.toolbar.active_scroll = "auto"
+    p.toolbar.active_drag = 'auto'
     p.background_fill_color = "#B0E0E6"
     p.patches(state_xs, state_ys, fill_alpha=1.0, fill_color='#FFFFE0',
               line_color="#884444", line_width=2, line_alpha=0.3)
@@ -239,12 +248,24 @@ def create_bokeh_choro(ff, prop=1, year=0):
     hover = p.select_one(HoverTool)
     hover.point_policy = "follow_mouse"
     property = ff['CA'][0].columns[prop]
-    print(property)
     hover.tooltips = [("County", "@name"), (property,
                                             "@pvalue"), ("(Long, Lat)", "($x, $y)")]
 
     output_file("US_transport.html", title="US Counties")
-    show(p)
+    slider = Slider(start=int(ff['CA'][0].index[0]), end=int(ff['CA'][0].index[-1]),
+                    value=int(ff['CA'][0].index[0]), step=1, title="Year")
+
+    def update(source=source, slider=slider, window=None):
+        """ Update the map: change the bike density measure according to slider
+            will be translated to JavaScript and Called in Browser """
+        data = source.data
+        v = cb_obj.get('value')
+        print(data[v])
+        data['pvalue'] = [x for x in data[v]]
+        source.trigger('change')
+    slider.js_on_change('value', CustomJS.from_py_func(update))
+    show(column(p, widgetbox(slider),))
+    return pvalues
 
 
 # %%
@@ -261,7 +282,7 @@ h = next(transform_city_dataframes(tp, ttype=[1]))
 get_simple_plots(tp, state='NY')
 
 # %% Bokeh Plotting
-create_bokeh_choro(tp, prop=3)
+q = create_bokeh_choro(tp, prop=0, year=0)
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
