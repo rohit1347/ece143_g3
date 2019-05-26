@@ -14,6 +14,7 @@ from bokeh.sampledata.us_states import data as states
 from bokeh.palettes import Greys256 as palette
 from bokeh.layouts import column, row, widgetbox
 from bokeh.models import CustomJS, Slider, Toggle
+from bokeh.models.callbacks import CustomJS
 # For Hover
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
@@ -193,6 +194,7 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
 
 
 def create_bokeh_choro(ff, prop=0, year=0):
+    # Very Important Function
     assert isinstance(prop, int)
     assert isinstance(year, int)
     assert len(ff['CA'][0].columns) > prop >= 0
@@ -222,20 +224,22 @@ def create_bokeh_choro(ff, prop=0, year=0):
         color_mapper = LogColorMapper(palette=palette)
     pvalues = []
 
-    for _ in range(nyears):
+    for yx in range(nyears):
         yvalues = []
         for state in ff.keys():
             for cs in ff[state]:
-                yvalues.append(cs.iloc[year, prop])
+                yvalues.append(cs.iloc[yx, prop])
         pvalues.append(yvalues)
-
-    alldat = {str(i): v for i, v in enumerate(pvalues)}
-    print(alldat)
+    alldat = {}
+    syear = ff['CA'][0].index[0]
+    for ix, yy in enumerate(range(syear, syear + nyears)):
+        alldat[str(yy)] = pvalues[ix]
+    # alldat = {str(i): v for i, v in enumerate(pvalues)}
     source = ColumnDataSource(data=dict(
         x=county_xs, y=county_ys,
-        name=district_name, pvalue=pvalues[year], **alldat))
+        name=district_name, pvalue=pvalues[0], **alldat))
     TOOLS = "pan,wheel_zoom,reset,hover,save"
-    p = figure(title=f"US Transportation for Year={ff['CA'][0].index[year]}", tools=TOOLS, plot_width=1800,
+    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=1800,
                plot_height=700, x_axis_location=None, y_axis_location=None)
     p.toolbar.active_scroll = "auto"
     p.toolbar.active_drag = 'auto'
@@ -251,21 +255,22 @@ def create_bokeh_choro(ff, prop=0, year=0):
     hover.tooltips = [("County", "@name"), (property,
                                             "@pvalue"), ("(Long, Lat)", "($x, $y)")]
 
-    output_file("US_transport.html", title="US Counties")
+    output_file("US_transport.html", title="US Public Transport")
     slider = Slider(start=int(ff['CA'][0].index[0]), end=int(ff['CA'][0].index[-1]),
-                    value=int(ff['CA'][0].index[0]), step=1, title="Year")
+                    value=int(ff['CA'][0].index[0]), step=1, title="Start Year")
 
     def update(source=source, slider=slider, window=None):
         """ Update the map: change the bike density measure according to slider
             will be translated to JavaScript and Called in Browser """
         data = source.data
-        v = cb_obj.get('value')
+        v = cb_obj.getv('value')
         print(data[v])
         data['pvalue'] = [x for x in data[v]]
         source.trigger('change')
+        # source.change.emit()
     slider.js_on_change('value', CustomJS.from_py_func(update))
     show(column(p, widgetbox(slider),))
-    return pvalues
+    return alldat
 
 
 # %%
@@ -273,7 +278,8 @@ start = time.time()
 tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
-sd = tp["CA"][0]
+# %%
+sd = tp["CA"][1]
 
 # %%
 h = next(transform_city_dataframes(tp, ttype=[1]))
@@ -282,7 +288,7 @@ h = next(transform_city_dataframes(tp, ttype=[1]))
 get_simple_plots(tp, state='NY')
 
 # %% Bokeh Plotting
-q = create_bokeh_choro(tp, prop=0, year=0)
+q = create_bokeh_choro(tp, prop=1, year=0)
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
