@@ -13,7 +13,7 @@ from bokeh.sampledata.us_counties import data as counties
 from bokeh.sampledata.us_states import data as states
 # For Hover
 from bokeh.io import show, output_file
-from bokeh.models import HoverTool
+from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
 # %matplotlib inline
 plt.style.use('fivethirtyeight')
 # %%
@@ -189,7 +189,11 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
 # %%
 
 
-def create_bokeh_choro(ff, prop=0, year=0):
+def create_bokeh_choro(ff, prop=1, year=0):
+    assert isinstance(prop, int)
+    assert isinstance(year, int)
+    assert len(ff['CA'][0].columns) > prop > 0
+    assert len(ff['CA'][0].index) > year >= 0
     try:
         # del states["HI"]
         del states["AK"]
@@ -199,33 +203,45 @@ def create_bokeh_choro(ff, prop=0, year=0):
     state_ys = [states[code]["lats"] for code in states]
     county_xs = []
     county_ys = []
+    district_name = []
     for cs in bokeh_counties.values():
         for dname in cs:
             county_xs.append([counties[code]["lons"]
                               for code in counties if counties[code]["detailed name"] == dname][0])
             county_ys.append([counties[code]["lats"]
                               for code in counties if counties[code]["detailed name"] == dname][0])
+            district_name.append(dname)
 
     colors = ["#F1EEF6", "#D4B9DA", "#C994C7", "#DF65B0", "#DD1C77", "#980043"]
-    county_colors = []
 
+    county_colors = []
+    # %%
+    color_mapper = LogColorMapper(palette=colors)
+    pvalues = []
     for state in states.keys():
         if state in ff.keys():
             for cs in ff[state]:
-                county_colors.append(colors[int(cs.iloc[0, 1]) % len(colors)])
+                pvalues.append(cs.iloc[year, prop])
 
-    p = figure(title="US Transportation", toolbar_location="left",
-               plot_width=1800, plot_height=700)
-
-    p.patches(county_xs, county_ys,
-              fill_color=county_colors, fill_alpha=0.7,
-              line_color="white", line_width=0.5)
-
-    p.patches(state_xs, state_ys, fill_alpha=0.0,
+    source = ColumnDataSource(data=dict(
+        x=county_xs, y=county_ys,
+        name=district_name, pvalue=pvalues,
+    ))
+    TOOLS = "pan,wheel_zoom,reset,hover,save"
+    p = figure(title=f"US Transportation for Year={ff['CA'][0].index[year]}", tools=TOOLS, plot_width=1800,
+               plot_height=700, x_axis_location=None, y_axis_location=None)
+    p.background_fill_color = "#B0E0E6"
+    p.patches(state_xs, state_ys, fill_alpha=1.0, fill_color='#FFFFE0',
               line_color="#884444", line_width=2, line_alpha=0.3)
-    # hover = p.select_one(HoverTool)
-    # hover.point_policy = "follow_mouse"
-    # hover.tooltips = [("District", "California")]
+    p.patches('x', 'y', source=source,
+              fill_color={'field': 'pvalue', 'transform': color_mapper},
+              fill_alpha=0.8, line_color="white", line_width=0.3)
+    hover = p.select_one(HoverTool)
+    hover.point_policy = "follow_mouse"
+    property = ff['CA'][0].columns[prop]
+    print(property)
+    hover.tooltips = [("County", "@name"), (property,
+                                            "@pvalue"), ("(Long, Lat)", "($x, $y)")]
 
     output_file("US_transport.html", title="US Counties")
     show(p)
@@ -245,7 +261,7 @@ h = next(transform_city_dataframes(tp, ttype=[1]))
 get_simple_plots(tp, state='NY')
 
 # %% Bokeh Plotting
-create_bokeh_choro(tp)
+create_bokeh_choro(tp, prop=3)
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
