@@ -193,7 +193,16 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
 # %%
 
 
-def create_bokeh_choro(ff, prop=0, year=0):
+def create_bokeh_choro(ff, prop=0):
+    """Creates Interactive Bokeh Choropleth for US counties transportationdata.
+
+    Arguments:
+        ff {dict} -- Dictionary containing filled dataframes
+
+    Keyword Arguments:
+        prop {int} -- Select the property for which choropleth needs to be created (default: {0})
+    """
+    year = 0
     # Very Important Function
     assert isinstance(prop, int)
     assert isinstance(year, int)
@@ -270,7 +279,6 @@ def create_bokeh_choro(ff, prop=0, year=0):
         # source.change.emit()
     slider.js_on_change('value', CustomJS.from_py_func(update))
     show(column(p, widgetbox(slider),))
-    return alldat
 
 
 # %%
@@ -288,7 +296,7 @@ h = next(transform_city_dataframes(tp, ttype=[1]))
 get_simple_plots(tp, state='NY')
 
 # %% Bokeh Plotting
-q = create_bokeh_choro(tp, prop=1, year=0)
+create_bokeh_choro(tp, prop=1)
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
