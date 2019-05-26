@@ -1,21 +1,20 @@
 # %%
+from ProjectWorkspace import *
+import plotly.figure_factory as ff
+import plotly
+import plotly.plotly as py
 import time
 import os
 import collections
 import numpy as np
-from numpy import array
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import string
-from ProjectWorkspace import *
-assert os.path.exists(os.path.abspath('ProjectWorkspace.py'))
-%matplotlib qt5
-
-# plt.style.use('classic')
+import itertools as it
+%matplotlib inline
 plt.style.use('fivethirtyeight')
-
+# %%
 
 def get_xls(pflag=0):
     """Returns list of Excel files found and for what years.
@@ -31,13 +30,12 @@ def get_xls(pflag=0):
     datasets = sorted(datasets)
     years = []
     for year in datasets:
-        years.append(int(''.join([y for y in list(year) if y.isdigit()])))
+        years.append(int(''.join([y for y in list(year) if y.isdigit()]))-2)
     years = list(sorted(set(years)))
     if pflag:
         print(f'Excel files found= {datasets}\n')
         print(f'Years= {years}\n')
     return datasets, years
-
 
 def create_empty_city_dataframes(cities=cities, pflag=0):
     """Returns a dictionary containing dataframes corresponding to cities.
@@ -54,6 +52,7 @@ def create_empty_city_dataframes(cities=cities, pflag=0):
         for cix, city in enumerate(cities[state]):
             dataframe_dict[state][cix] = pd.DataFrame(
                 columns=col_index_names, index=get_xls()[-1])
+            dataframe_dict[state][cix].index.name = 'Year'
     if pflag:
         print('Created empty dataframes dict')
     return dataframe_dict
@@ -115,8 +114,9 @@ def create_city_dataframes(pflag=0, cities=cities):
                 index = list(index)
                 for coord in index:
                     data.append(sheet.iloc[coord[0]][coord[1]])
-                if years[di] > 2008 and years[di] < 2017:
-                    data[3:] = [x*1000 for x in data[3:]]
+                if years[di] > 2006 and years[di] < 2015:
+                    data[3:] = [x * 1000 for x in data[3:]]
+                data = pd.to_numeric(data)
                 city_df.loc[years[di]] = data
     if pflag:
         # Prints the filled dataframe
@@ -124,20 +124,113 @@ def create_city_dataframes(pflag=0, cities=cities):
     return filled_frames
 
 
+def get_simple_plots(filled_frames, state='CA', city_index=0):
+    """Gives simple plots for specified city.
+
+    Arguments:
+        filled_frames {dict} -- Dictionary containing the relevant data for all cities.
+        Specify `Matplotlib` style and magic commands before the function, if needed.
+
+    Keyword Arguments:
+        state {str} -- Specify which state the city is in (default: {'CA'})
+        city_index {int} -- Look up the index for cities in the dictionary `cities` (default: {0})
+    """
+    assert isinstance(filled_frames, dict)
+    assert isinstance(filled_frames[state]
+                      [city_index], pd.core.frame.DataFrame)
+    assert 'matplotlib' in sys.modules
+    df_to_plot = filled_frames[state][city_index]
+    for column in df_to_plot.columns:
+        plt.figure(figsize=(8, 6), dpi=80, facecolor='w', edgecolor='k')
+        plt.plot(df_to_plot.index, df_to_plot[column])
+        plt.title(f'{cities[state][city_index]} - {column}')
+        plt.xlabel('Year')
+        plt.ylabel(column)
+        plt.show()
+
+
+def transform_city_dataframes(filled_frames, ttype=[0]):
+    """Generator for returning transformed city transportation data.
+
+    Arguments:
+        filled_frames {dict} -- Dictionary containing city data.
+
+    Keyword Arguments:
+        ttype {list} -- Choose type of transform. Can obtain multiple transforms by adding options to list (default: {[0]}).
+
+    `ttype` Options:
+        0 -- Per 1000 people
+        1 -- Per person
+    """
+    assert isinstance(ttype, list)
+    assert all(isinstance(obj, int) for obj in ttype)
+    assert isinstance(filled_frames, dict)
+    mdf = filled_frames
+    # Modified dataframe
+    for tix, ty in enumerate(ttype):
+        if ty == 0:
+            # For per 1000 people calculation, value/pop*1000
+            for state in mdf.keys():
+                for city, df in enumerate(mdf[state]):
+                    df.columns = col_index_names1000
+                    df.iloc[:, 1:] = df.iloc[:, 1:].div(1/1000).div(
+                        df.iloc[:, 0], axis='index')
+        if ty == 1:
+            for state in mdf.keys():
+                for city, df in enumerate(mdf[state]):
+                    df.columns = col_index_names_p
+                    df.iloc[:, 1:] = df.iloc[:, 1:].div(
+                        df.iloc[:, 0], axis='index')
+        yield mdf
+
+
+def plotly_transportation():
+    plotly.tools.set_credentials_file(
+        username='rohit1347', api_key='wP0wJffd8666ba1iS6CT')
+    plotly.tools.set_config_file(world_readable=True, sharing='public')
+    df = create_city_dataframes()
+    df = next(transform_city_dataframes(df, ttype=[0]))
+    COUNTIES = []
+    values = []
+    fips = []
+    idx = 1
+    for state in df.keys():
+        for county in range(len(df[state])):
+            values.append(df[state][county].iloc[0, idx])
+            COUNTIES.append(cities[state][county])
+            fips.append(int(cities_fips[state][county]))
+
+    colorscale = [
+        'rgb(68.0, 1.0, 84.0)',
+        'rgb(66.0, 64.0, 134.0)',
+        'rgb(38.0, 130.0, 142.0)',
+        'rgb(63.0, 188.0, 115.0)',
+        'rgb(216.0, 226.0, 25.0)'
+    ]
+
+    fig = ff.create_choropleth(fips=fips, values=values, county_outline={
+                               'color': 'rgb(255,255,255)', 'width': 0.5}, legend_title=df[state][county].columns[idx])
+    fig['layout']['legend'].update({'x': 0})
+    fig['layout']['annotations'][0].update({'x': -0.12, 'xanchor': 'left'})
+    return fig
+
+
 # %%
 start = time.time()
-transportation = create_city_dataframes()
+tp = create_city_dataframes()
 end = time.time()
-print(f'Time to compute dataframes: {end-start}')
+print(f'Time to compute dataframes: {end-start:.2f}')
+sd = tp["CA"][0]
+
+# %%
+h = next(transform_city_dataframes(tp, ttype=[0]))
 
 # %% Plotting
-sd = transportation['CA'][0]
-for column in sd.columns:
-    plt.plot(sd.index, sd[column])
-    plt.title(f'San Diego - {column}')
-    plt.xlabel('Year')
-    plt.ylabel(column)
-    plt.show()
+get_simple_plots(tp, state='NY')
+# %%
+py.iplot(plotly_transportation(), filename='transportation')
+
+
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
@@ -159,56 +252,10 @@ print(dataset_index)
 
 
 # %%
-# i = 0
-
-# pop2008 = [[0 for x in range(3)] for x in range(14)]
-
-# for state, city_list in transportation.items():
-#     city_pop = [d.get('Urban Population') for d in city_list]
-#     a = array(city_pop)/1000000
-#     col=0
-#     for row in a:
-#         pop2008[i][col] = row[0]
-#         col=col+1
-#     i=i+1
-
-# N = 14
-# ind = np.arange(N)
-# width = 0.35
-# p1 = plt.bar(ind, [row[0] for row in pop2008], width)
-# p2 = plt.bar(ind, [row[1] for row in pop2008], width, bottom=[row[0] for row in pop2008])
-# p3 = plt.bar(ind, [row[2] for row in pop2008], width, bottom=np.array([row[0] for row in pop2008])+np.array([row[1] for row in pop2008]))
-# plt.ylabel('Population in millions', color='black')
-# plt.title('Population by states and cities', color='black')
-# plt.xticks(ind, cities.keys(), color='black')
-# plt.tick_params(axis='y', colors='black')
-# plt.show()
-
-# fig = plt.Figure()
-# ax = Axes3D(fig)
-# X = ind
-# Y = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2016, 2017, 2019]
-# Z =
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-colors = ['r', 'g', 'b', 'y']
-for i, (c, z) in enumerate(zip(colors, [30, 20, 10, 0])):
-    xs = np.arange(20)
-    ys = np.random.rand(20)
-    ys2 = np.random.rand(20)
-    ys3 = np.random.rand(20)
-
-    # You can provide either a single color or an array. To demonstrate this,
-    # the first bar of each set will be colored cyan.
-    cs = [c] * len(xs)
-    cs[0] = 'c'
-    ax.bar(xs, ys, zs=z, zdir='y', color=cs, alpha=0.3)
-    ax.bar(xs, ys2, bottom=ys, zs=z, zdir='y', color=colors[1], alpha=0.3)
-    ax.bar(xs, ys3, bottom=ys+ys2, zs=z, zdir='y', color=colors[2], alpha=0.3)
-
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-
-plt.show()
+SD = tp.get('CA')[0]
+df = pd.DataFrame(SD['Urban Population'])
+#df.plot()
+SD_pop = hv.Dataset(data=df, kdims=['Year', 'Urban Population'])
+print(SD_pop.groupby('Year'))
+print(SD_pop.groupby('Urban Population'))
+SD_pop.to(hv.Curve,'Year','Pop',groupby='City').options(height=200)
