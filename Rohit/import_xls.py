@@ -1,18 +1,20 @@
 # %%
 from ProjectWorkspace import *
-import plotly.figure_factory as ff
-import plotly
-import plotly.plotly as py
+
 import time
 import os
 import collections
 import numpy as np
 import pandas as pd
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import string
-import itertools as it
-%matplotlib inline
+from bokeh.plotting import figure, show, output_file
+from bokeh.sampledata.us_counties import data as counties
+from bokeh.sampledata.us_states import data as states
+# For Hover
+from bokeh.io import show, output_file
+from bokeh.models import HoverTool
+# %matplotlib inline
 plt.style.use('fivethirtyeight')
 # %%
 
@@ -126,7 +128,7 @@ def create_city_dataframes(pflag=0, cities=cities):
     return filled_frames
 
 
-def get_simple_plots(filled_frames, state='California', city_index=0):
+def get_simple_plots(filled_frames, state='CA', city_index=0):
     """Gives simple plots for specified city.
 
     Arguments:
@@ -134,13 +136,12 @@ def get_simple_plots(filled_frames, state='California', city_index=0):
         Specify `Matplotlib` style and magic commands before the function, if needed.
 
     Keyword Arguments:
-        state {str} -- Specify which state the city is in (default: {'California'})
+        state {str} -- Specify which state the city is in (default: {'CA'})
         city_index {int} -- Look up the index for cities in the dictionary `cities` (default: {0})
     """
     assert isinstance(filled_frames, dict)
     assert isinstance(filled_frames[state]
                       [city_index], pd.core.frame.DataFrame)
-    assert 'matplotlib' in sys.modules
     df_to_plot = filled_frames[state][city_index]
     for column in df_to_plot.columns:
         plt.figure(figsize=(8, 6), dpi=80, facecolor='w', edgecolor='k')
@@ -185,45 +186,49 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
                         df.iloc[:, 0], axis='index')
         yield mdf
 
+# %%
 
-def plotly_transportation(df, state='California', tflag=0, ttype=0):
-    """Create Choropleth for US States
 
-    Arguments:
-        df {pd dataframe} -- Filled frames
+def create_bokeh_choro(ff, prop=0, year=0):
+    try:
+        # del states["HI"]
+        del states["AK"]
+    except:
+        pass
+    state_xs = [states[code]["lons"] for code in states]
+    state_ys = [states[code]["lats"] for code in states]
+    county_xs = []
+    county_ys = []
+    for cs in bokeh_counties.values():
+        for dname in cs:
+            county_xs.append([counties[code]["lons"]
+                              for code in counties if counties[code]["detailed name"] == dname][0])
+            county_ys.append([counties[code]["lats"]
+                              for code in counties if counties[code]["detailed name"] == dname][0])
 
-    Keyword Arguments:
-        state {str} -- Full state name, ex 'Washington, DC' (default: {'California'})
-        tflag {int} -- Transform flag (default: {0})
-        ttype {int} -- Transform type, checl `transform_city_dataframes` for transform types (default: {0})
-    """
-    plotly.tools.set_credentials_file(
-        username='rohit1347', api_key='wP0wJffd8666ba1iS6CT')
-    plotly.tools.set_config_file(world_readable=True, sharing='public')
-    if tflag:
-        df = next(transform_city_dataframes(df, ttype=[ttype]))
-    COUNTIES = []
-    values = []
-    fips = []
-    idx = 1
-    for ix, county in enumerate(df[state]):
-        COUNTIES.append(county)
-        values.append(df[state][ix].iloc[0, idx])
-        fips.append(int(cities_fips[state][ix]))
-    assert len(values) == len(fips)
-    colorscale = [
-        'rgb(68.0, 1.0, 84.0)',
-        'rgb(66.0, 64.0, 134.0)',
-        'rgb(38.0, 130.0, 142.0)',
-        'rgb(63.0, 188.0, 115.0)',
-        'rgb(216.0, 226.0, 25.0)'
-    ]
+    colors = ["#F1EEF6", "#D4B9DA", "#C994C7", "#DF65B0", "#DD1C77", "#980043"]
+    county_colors = []
 
-    fig = ff.create_choropleth(fips=fips, values=values, scope=[state],
-                               state_outline={'width': 1, 'color': 'rgb(127,127,127)'}, county_outline={'color': 'rgb(127,127,127)', 'width': 0.75}, legend_title=df[state][0].columns[idx])
-    fig['layout']['legend'].update({'x': 0})
-    fig['layout']['annotations'][0].update({'x': -0.12, 'xanchor': 'left'})
-    return fig
+    for state in states.keys():
+        if state in ff.keys():
+            for cs in ff[state]:
+                county_colors.append(colors[int(cs.iloc[0, 1]) % len(colors)])
+
+    p = figure(title="US Transportation", toolbar_location="left",
+               plot_width=1800, plot_height=700)
+
+    p.patches(county_xs, county_ys,
+              fill_color=county_colors, fill_alpha=0.7,
+              line_color="white", line_width=0.5)
+
+    p.patches(state_xs, state_ys, fill_alpha=0.0,
+              line_color="#884444", line_width=2, line_alpha=0.3)
+    # hover = p.select_one(HoverTool)
+    # hover.point_policy = "follow_mouse"
+    # hover.tooltips = [("District", "California")]
+
+    output_file("US_transport.html", title="US Counties")
+    show(p)
 
 
 # %%
@@ -231,18 +236,16 @@ start = time.time()
 tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
-sd = tp["California"][0]
+sd = tp["CA"][0]
 
 # %%
 h = next(transform_city_dataframes(tp, ttype=[1]))
 
 # %% Plotting
-get_simple_plots(tp, state='New York')
-# %%
-# plotly_transportation(tp)
-py.iplot(plotly_transportation(tp, state='Pennsylvania'), filename='transportation')
+get_simple_plots(tp, state='NY')
 
-
+# %% Bokeh Plotting
+create_bokeh_choro(tp)
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
