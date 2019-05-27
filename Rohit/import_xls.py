@@ -315,8 +315,6 @@ def interpolate_dataframes(ff):
             cf.sort_index(inplace=True)
     return(ff)
 
-# %%
-
 
 def get_car_economy(fname='car_economy.csv'):
     """Returns national car economy stats for years 1975-2017.
@@ -331,10 +329,16 @@ def get_car_economy(fname='car_economy.csv'):
     car_eco2['Real World Economy'] = emit[:-1]
     car_eco2['Real World Economy'] = car_eco2['Real World Economy'].astype(int)
     car_eco2.index.name = 'Year'
-    return(car_eco2)
+    return (car_eco2)
 
+def get_us_ridership(fname='ridership_US.csv'):
+    """Returns the US public transportation from 1922-2017.
 
-get_car_economy()
+    Keyword Arguments:
+        fname {str} -- CSV filename from which to pull data (default: {'ridership_US.csv'})
+    """
+    return pd.read_csv(fname, index_col='Year')
+
 # %%
 start = time.time()
 tp = create_city_dataframes()
