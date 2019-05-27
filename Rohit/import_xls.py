@@ -277,12 +277,10 @@ def create_bokeh_choro(ff, prop=0):
     slider.js_on_change('value', CustomJS.from_py_func(update))
     show(column(p, widgetbox(slider),))
 
-# %%
-
 
 def get_sales_data(fname='TOTALSA.csv'):
     """Returns car sales data from 1978 to 2019(provisional).
-    
+
     Keyword Arguments:
         fname {str} -- Filename from which sales data needs to be pulled (default: {'TOTALSA.csv'})
     """
@@ -295,9 +293,34 @@ def get_sales_data(fname='TOTALSA.csv'):
     result = sales_months.groupby(
         'Year')['TOTALSA'].sum().to_frame().sort_index()
     result['TOTALSA'] = result['TOTALSA'] * 1e6
-    result.rename(columns={'TOTALSA':'Total Sales'},inplace=True)
+    result.rename(columns={'TOTALSA': 'Total Sales'}, inplace=True)
     return(result)
 
+# %%
+
+
+def interpolate_dataframes(ff):
+    """Interploate values for missing years.
+
+    Arguments:
+        ff {dict} -- Dictionary of filled frames
+    """
+    assert isinstance(ff, dict)
+    year_min = ff['CA'][0].index[0]
+    year_max = ff['CA'][0].index[-1]
+    years = list(range(year_min, year_max + 1))
+    for state in ff.keys():
+        for cx, cf in enumerate(ff[state]):
+            for yx, year in enumerate(years):
+                if year not in cf.index:
+                    cf.loc[year] = cf.loc[year-1:year+1, :].sum(axis=0)
+                    cf.loc[year] = cf.loc[year] / 2
+            cf.sort_index(inplace=True)
+    return(ff)
+# %%
+
+
+interpolate_dataframes(tp)
 # %%
 start = time.time()
 tp = create_city_dataframes()
