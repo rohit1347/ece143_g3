@@ -19,7 +19,7 @@ from bokeh.models.callbacks import CustomJS
 # For Hover
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
-# %matplotlib inline
+%matplotlib qt5
 plt.style.use('fivethirtyeight')
 # %%
 
@@ -317,36 +317,42 @@ for excel in datasets:
     dataset_index[excel] = cindexer
 print(dataset_index)
 
-
 # %%
-def graph_year_property(y, p_no=0):
+def graph_year_property(tp,yr=2007, p_no=0):
     '''
     Creates bar graphs for particular year and property
     '''
+    assert yr>=2006 and yr<=2017
     i = 0
+    yr_ind=0
     p_value = [[0 for x in range(3)] for x in range(18)]
     years=[2006,2007,2008,2009,2010,2011,2012,2014,2015,2017]
-    for j, v in enumerate(years):
-        if v == y:
-            y_ind=j
-
+    for v in years:
+        if v == yr:
+            break
+        yr_ind=yr_ind+1
     for state, city_list in tp.items():
-        city_p = [d.get(col_index_names[p_no]) for d in city_list]
+        city_p = [d.get(str(col_index_names_p[p_no])) for d in city_list]
         a = array(city_p)
         col=0
         for row in a:
-            p_value[i][col] = row[y_ind]
+            p_value[i][col] = row[yr_ind]
             col=col+1
         i=i+1
-
     N = 18
     ind = np.arange(N)
     width = 0.35
+    xlabels=[]
+    for key, value in cities.items():
+        z = ",\n"
+        z = z.join(value)
+        xlabels.append(key + ': ' + z)
     p1 = plt.bar(ind, [row[0] for row in p_value], width)
     p2 = plt.bar(ind, [row[1] for row in p_value], width, bottom=[row[0] for row in p_value])
     p3 = plt.bar(ind, [row[2] for row in p_value], width, bottom=np.array([row[0] for row in p_value])+np.array([row[1] for row in p_value]))
-    plt.ylabel('Population in millions', color='black')
-    plt.title('Year', color='black')
-    plt.xticks(ind, cities.keys(), color='black')
-    plt.tick_params(axis='y', colors='black')
+    plt.ylabel(col_index_names_p[p_no], color='black',fontsize=10)
+    plt.title('Year '+str(yr),fontsize=12)
+    plt.xticks(ind, xlabels)
+    plt.tick_params(axis='y',labelsize=8)
+    plt.tick_params(axis='x',labelsize=6,labelrotation=90)
     plt.show()
