@@ -248,8 +248,8 @@ def create_bokeh_choro(ff, prop=0):
         x=county_xs, y=county_ys,
         name=district_name, pvalue=pvalues[0], **alldat))
     TOOLS = "pan,wheel_zoom,reset,hover,save"
-    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=1800,
-               plot_height=700, x_axis_location=None, y_axis_location=None)
+    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=1200,
+               plot_height=600, x_axis_location=None, y_axis_location=None)
     p.toolbar.active_scroll = "auto"
     p.toolbar.active_drag = 'auto'
     p.background_fill_color = "#B0E0E6"
@@ -263,8 +263,8 @@ def create_bokeh_choro(ff, prop=0):
     property = ff['CA'][0].columns[prop]
     hover.tooltips = [("County", "@name"), (property,
                                             "@pvalue"), ("(Long, Lat)", "($x, $y)")]
-
-    output_file("US_transport.html", title="US Public Transport")
+    output_file(f"{ff['CA'][0].columns[prop].replace(' ','')}.html",
+                title="US Public Transport")
     slider = Slider(start=int(ff['CA'][0].index[0]), end=int(ff['CA'][0].index[-1]),
                     value=int(ff['CA'][0].index[0]), step=1, title="Start Year")
 
@@ -273,7 +273,6 @@ def create_bokeh_choro(ff, prop=0):
             will be translated to JavaScript and Called in Browser """
         data = source.data
         v = cb_obj.getv('value')
-        print(data[v])
         data['pvalue'] = [x for x in data[v]]
         source.trigger('change')
         # source.change.emit()
@@ -287,7 +286,7 @@ tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
 # %%
-sd = tp["CA"][1]
+sd = tp["CA"][0]
 
 # %%
 h = next(transform_city_dataframes(tp, ttype=[1]))
@@ -296,7 +295,7 @@ h = next(transform_city_dataframes(tp, ttype=[1]))
 get_simple_plots(tp, state='NY')
 
 # %% Bokeh Plotting
-create_bokeh_choro(tp, prop=1)
+create_bokeh_choro(tp, prop=7)
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
