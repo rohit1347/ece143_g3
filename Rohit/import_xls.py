@@ -317,15 +317,15 @@ def interpolate_dataframes(ff):
                     cf.loc[year] = (cf.loc[year] / 2).astype(np.int64)
             cf.sort_index(inplace=True)
     return(ff)
-# %%
 
 
-interpolate_dataframes(tp)
 # %%
 start = time.time()
 tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
+# %%
+interpolate_dataframes(tp)
 # %%
 sd = tp["CA"][0]
 
