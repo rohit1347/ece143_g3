@@ -294,7 +294,8 @@ def get_sales_data(fname='TOTALSA.csv'):
     sales_months['Year'] = dates
     result = sales_months.groupby(
         'Year')['TOTALSA'].sum().to_frame().sort_index()
-    result['TOTALSA']=result['TOTALSA']*1e6
+    result['TOTALSA'] = result['TOTALSA'] * 1e6
+    result.rename(columns={'TOTALSA':'Total Sales'},inplace=True)
     return(result)
 
 # %%
