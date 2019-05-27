@@ -241,7 +241,6 @@ def create_bokeh_choro(ff, prop=0):
     syear = ff['CA'][0].index[0]
     for ix, yy in enumerate(range(syear, syear + nyears)):
         alldat[str(yy)] = pvalues[ix]
-    # alldat = {str(i): v for i, v in enumerate(pvalues)}
     source = ColumnDataSource(data=dict(
         x=county_xs, y=county_ys,
         name=district_name, pvalue=pvalues[0], **alldat))
@@ -296,8 +295,6 @@ def get_sales_data(fname='TOTALSA.csv'):
     result.rename(columns={'TOTALSA': 'Total Sales'}, inplace=True)
     return(result)
 
-# %%
-
 
 def interpolate_dataframes(ff):
     """Interploate values for missing years.
@@ -318,7 +315,26 @@ def interpolate_dataframes(ff):
             cf.sort_index(inplace=True)
     return(ff)
 
+# %%
 
+
+def get_car_economy(fname='car_economy.csv'):
+    """Returns national car economy stats for years 1975-2017.
+
+    Keyword Arguments:
+        fname {str} -- CSV fiename from which data needs to be pulled. (default: {'car_economy.csv'})
+    """
+    car_eco = pd.read_csv(fname)
+    years = car_eco['Model Year'].tolist()
+    emit = car_eco['Real-world MPG'].tolist()
+    car_eco2 = pd.DataFrame(index=years[:-1], columns=['Real World Economy'])
+    car_eco2['Real World Economy'] = emit[:-1]
+    car_eco2['Real World Economy'] = car_eco2['Real World Economy'].astype(int)
+    car_eco2.index.name = 'Year'
+    return(car_eco2)
+
+
+get_car_economy()
 # %%
 start = time.time()
 tp = create_city_dataframes()
