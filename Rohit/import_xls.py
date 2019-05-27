@@ -15,9 +15,9 @@ from bokeh.palettes import Greys256 as palette
 from bokeh.layouts import column, row, widgetbox
 from bokeh.models import CustomJS, Slider, Toggle
 from bokeh.models.callbacks import CustomJS
-# For Hover
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
+from datetime import datetime
 # %matplotlib inline
 plt.style.use('fivethirtyeight')
 # %%
@@ -190,8 +190,6 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
                         df.iloc[:, 0], axis='index')
         yield mdf
 
-# %%
-
 
 def create_bokeh_choro(ff, prop=0):
     """Creates Interactive Bokeh Choropleth for US counties transportationdata.
@@ -279,6 +277,25 @@ def create_bokeh_choro(ff, prop=0):
     slider.js_on_change('value', CustomJS.from_py_func(update))
     show(column(p, widgetbox(slider),))
 
+# %%
+
+
+def get_sales_data(fname='TOTALSA.csv'):
+    """Returns car sales data from 1978 to 2019(provisional).
+    
+    Keyword Arguments:
+        fname {str} -- Filename from which sales data needs to be pulled (default: {'TOTALSA.csv'})
+    """
+    sales_months = pd.read_csv(fname)
+    dates = sales_months['DATE'].tolist()
+    for ix, date in enumerate(dates):
+        dates[ix] = datetime.strptime(date, '%Y-%m-%d')
+        dates[ix] = dates[ix].strftime('%Y')
+    sales_months['Year'] = dates
+    result = sales_months.groupby(
+        'Year')['TOTALSA'].sum().to_frame().sort_index()
+    result['TOTALSA']=result['TOTALSA']*1e6
+    return(result)
 
 # %%
 start = time.time()
@@ -296,6 +313,7 @@ get_simple_plots(tp, state='NY')
 
 # %% Bokeh Plotting
 create_bokeh_choro(tp, prop=7)
+
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
