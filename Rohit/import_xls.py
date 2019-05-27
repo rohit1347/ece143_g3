@@ -310,11 +310,11 @@ def interpolate_dataframes(ff):
     year_max = ff['CA'][0].index[-1]
     years = list(range(year_min, year_max + 1))
     for state in ff.keys():
-        for cx, cf in enumerate(ff[state]):
-            for yx, year in enumerate(years):
+        for cf in ff[state]:
+            for year in years:
                 if year not in cf.index:
                     cf.loc[year] = cf.loc[year-1:year+1, :].sum(axis=0)
-                    cf.loc[year] = cf.loc[year] / 2
+                    cf.loc[year] = (cf.loc[year] / 2).astype(np.int64)
             cf.sort_index(inplace=True)
     return(ff)
 # %%
