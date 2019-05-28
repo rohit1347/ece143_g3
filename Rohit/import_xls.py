@@ -344,8 +344,6 @@ def get_us_ridership(fname='ridership_US.csv'):
 def combine_for_correlation():
     """Takes fuel economy, ridership and car sales data and combines them for the years in which all 3 are present.
     """
-    ce = get_car_economy()
-    ce.index.astype(int)
     usr = get_us_ridership()
     usr.index.astype(int)
     sales = get_sales_data()
@@ -353,6 +351,9 @@ def combine_for_correlation():
     temp=pd.concat([ce,usr,sales],axis=1)
     return temp.dropna()
 
+#%%
+def create_correlation(df):
+    pass
 #%%
 
 # %%
