@@ -346,14 +346,12 @@ def get_us_ridership(fname='ridership_US.csv'):
     return pd.read_csv(fname, index_col='Year')
 
 
-def combine_for_correlation():
+def combine_for_correlation(df1=get_us_ridership(), df2=get_sales_data()):
     """Takes fuel economy, ridership and car sales data and combines them for the years in which all 3 are present.
     """
-    usr = get_us_ridership()
-    usr.index.astype(int)
-    sales = get_sales_data()
-    sales.index.astype(int)
-    temp = pd.concat([usr, sales], axis=1)
+    df1.index.astype(int)
+    df2.index.astype(int)
+    temp = pd.concat([df1, df2], axis=1)
     return temp.dropna()
 
 
@@ -377,7 +375,20 @@ def create_correlation_plot(df):
     plt.show()
     plt.savefig(f'corr{df.columns[0][0]}v{df.columns[1][0]}.jpg')
 
-# %%
+
+def get_mv_deaths(fname='deaths-and-population-ra.csv'):
+    """Get motor vehicle deaths from 1913-2017.
+
+    Keyword Arguments:
+        fname {str} -- File name from which data is to be pulled (default: {'deaths-and-population-ra.csv'})
+    """
+    df = pd.read_csv(fname)
+    df2 = pd.DataFrame(index=df['Category'].astype(
+        int), columns=['Deaths Due to MVs'], dtype=int)
+    df2.index.name = 'Year'
+    data = df.iloc[:, 1].tolist()
+    df2[df2.columns[0]] = data
+    return df2
 
 
 # %%
@@ -386,7 +397,7 @@ tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
 # %%
-interpolate_dataframes(tp)
+tp = interpolate_dataframes(tp)
 # %%
 sd = tp["CA"][0]
 
