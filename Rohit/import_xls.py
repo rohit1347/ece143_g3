@@ -19,7 +19,7 @@ from bokeh.models.callbacks import CustomJS
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
 from datetime import datetime
-# %matplotlib inline
+%matplotlib qt5
 plt.style.use('fivethirtyeight')
 # %%
 
@@ -293,7 +293,8 @@ def get_sales_data(fname='TOTALSA.csv'):
     result = sales_months.groupby(
         'Year')['TOTALSA'].sum().to_frame().sort_index()
     result['TOTALSA'] = result['TOTALSA']
-    result.rename(columns={'TOTALSA': 'Total Sales (in millions)'}, inplace=True)
+    result.rename(
+        columns={'TOTALSA': 'Total Sales of Personal Vehicles (in millions)'}, inplace=True)
     return(result)
 
 
@@ -324,14 +325,17 @@ def get_car_economy(fname='car_economy.csv'):
         fname {str} -- CSV fiename from which data needs to be pulled. (default: {'car_economy.csv'})
     """
     car_eco = pd.read_csv(fname)
-    car_eco=car_eco.iloc[:-1,:]
+    car_eco = car_eco.iloc[:-1, :]
     years = car_eco['Model Year'].astype(int).tolist()
     emit = car_eco['Real-world MPG'].tolist()
-    car_eco2 = pd.DataFrame(index=years, columns=['Real World Fuel Economy (mpg)'])
+    car_eco2 = pd.DataFrame(index=years, columns=[
+                            'Real World Fuel Economy (mpg)'])
     car_eco2['Real World Fuel Economy (mpg)'] = emit
-    car_eco2['Real World Fuel Economy (mpg)'] = car_eco2['Real World Fuel Economy (mpg)'].astype(int)
+    car_eco2['Real World Fuel Economy (mpg)'] = car_eco2['Real World Fuel Economy (mpg)'].astype(
+        int)
     car_eco2.index.name = 'Year'
     return (car_eco2)
+
 
 def get_us_ridership(fname='ridership_US.csv'):
     """Returns the US public transportation from 1922-2017.
@@ -341,6 +345,7 @@ def get_us_ridership(fname='ridership_US.csv'):
     """
     return pd.read_csv(fname, index_col='Year')
 
+
 def combine_for_correlation():
     """Takes fuel economy, ridership and car sales data and combines them for the years in which all 3 are present.
     """
@@ -348,13 +353,32 @@ def combine_for_correlation():
     usr.index.astype(int)
     sales = get_sales_data()
     sales.index.astype(int)
-    temp=pd.concat([ce,usr,sales],axis=1)
+    temp = pd.concat([usr, sales], axis=1)
     return temp.dropna()
 
-#%%
-def create_correlation(df):
-    pass
-#%%
+
+def create_correlation_plot(df):
+    """Create seaborn correlation plot for input data frame.
+
+    Arguments:
+        df {pd Dataframe} -- Dataframe with index as years and column1=data1 and column2=data2.
+    """
+    xdata = df.iloc[:, 0]
+    ydata = df.iloc[:, 1]
+    plt.clf
+    plt.figure(figsize=(20, 18))
+    sns.regplot(xdata, ydata, marker='o', data=df.index)
+    plt.title(f'{df.columns[0]} vs. {df.columns[1]}', color='k')
+    plt.xlabel(f'{df.columns[0]}', color='k')
+    plt.ylabel(f'{df.columns[1]}', color='k')
+    plt.grid(True)
+    plt.xticks(color='k')
+    plt.yticks(color='k')
+    plt.show()
+    plt.savefig(f'corr{df.columns[0][0]}v{df.columns[1][0]}.jpg')
+
+# %%
+
 
 # %%
 start = time.time()
