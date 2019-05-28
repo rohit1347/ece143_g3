@@ -392,19 +392,12 @@ def get_mv_deaths(fname='deaths-and-population-ra.csv'):
 
 
 # %%
-accidents = pd.read_excel('accidents.xlsx')
-accidents = accidents.dropna(thresh=2)
-accidents.fillna('Year')
-acc = pd.DataFrame(index=accidents.loc['Year'].astype(
-    int), column='Vehicle Accidents')
-
-# %%
 start = time.time()
 tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
 # %%
-interpolate_dataframes(tp)
+tp = interpolate_dataframes(tp)
 # %%
 sd = tp["CA"][0]
 
