@@ -6,6 +6,7 @@ import os
 import collections
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 import string
 from bokeh.plotting import figure, show, output_file
@@ -287,12 +288,12 @@ def get_sales_data(fname='TOTALSA.csv'):
     dates = sales_months['DATE'].tolist()
     for ix, date in enumerate(dates):
         dates[ix] = datetime.strptime(date, '%Y-%m-%d')
-        dates[ix] = dates[ix].strftime('%Y')
+        dates[ix] = int(dates[ix].strftime('%Y'))
     sales_months['Year'] = dates
     result = sales_months.groupby(
         'Year')['TOTALSA'].sum().to_frame().sort_index()
-    result['TOTALSA'] = result['TOTALSA'] * 1e6
-    result.rename(columns={'TOTALSA': 'Total Sales'}, inplace=True)
+    result['TOTALSA'] = result['TOTALSA']
+    result.rename(columns={'TOTALSA': 'Total Sales (in millions)'}, inplace=True)
     return(result)
 
 
@@ -323,11 +324,12 @@ def get_car_economy(fname='car_economy.csv'):
         fname {str} -- CSV fiename from which data needs to be pulled. (default: {'car_economy.csv'})
     """
     car_eco = pd.read_csv(fname)
-    years = car_eco['Model Year'].tolist()
+    car_eco=car_eco.iloc[:-1,:]
+    years = car_eco['Model Year'].astype(int).tolist()
     emit = car_eco['Real-world MPG'].tolist()
-    car_eco2 = pd.DataFrame(index=years[:-1], columns=['Real World Economy'])
-    car_eco2['Real World Economy'] = emit[:-1]
-    car_eco2['Real World Economy'] = car_eco2['Real World Economy'].astype(int)
+    car_eco2 = pd.DataFrame(index=years, columns=['Real World Fuel Economy (mpg)'])
+    car_eco2['Real World Fuel Economy (mpg)'] = emit
+    car_eco2['Real World Fuel Economy (mpg)'] = car_eco2['Real World Fuel Economy (mpg)'].astype(int)
     car_eco2.index.name = 'Year'
     return (car_eco2)
 
@@ -338,6 +340,20 @@ def get_us_ridership(fname='ridership_US.csv'):
         fname {str} -- CSV filename from which to pull data (default: {'ridership_US.csv'})
     """
     return pd.read_csv(fname, index_col='Year')
+
+def combine_for_correlation():
+    """Takes fuel economy, ridership and car sales data and combines them for the years in which all 3 are present.
+    """
+    ce = get_car_economy()
+    ce.index.astype(int)
+    usr = get_us_ridership()
+    usr.index.astype(int)
+    sales = get_sales_data()
+    sales.index.astype(int)
+    temp=pd.concat([ce,usr,sales],axis=1)
+    return temp.dropna()
+
+#%%
 
 # %%
 start = time.time()
