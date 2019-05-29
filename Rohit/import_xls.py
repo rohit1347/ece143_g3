@@ -6,6 +6,7 @@ import os
 import collections
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 import string
 from bokeh.plotting import figure, show, output_file
@@ -15,10 +16,10 @@ from bokeh.palettes import Greys256 as palette
 from bokeh.layouts import column, row, widgetbox
 from bokeh.models import CustomJS, Slider, Toggle
 from bokeh.models.callbacks import CustomJS
-# For Hover
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
-# %matplotlib inline
+from datetime import datetime
+%matplotlib qt5
 plt.style.use('fivethirtyeight')
 # %%
 
@@ -190,8 +191,6 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
                         df.iloc[:, 0], axis='index')
         yield mdf
 
-# %%
-
 
 def create_bokeh_choro(ff, prop=0):
     """Creates Interactive Bokeh Choropleth for US counties transportationdata.
@@ -243,7 +242,6 @@ def create_bokeh_choro(ff, prop=0):
     syear = ff['CA'][0].index[0]
     for ix, yy in enumerate(range(syear, syear + nyears)):
         alldat[str(yy)] = pvalues[ix]
-    # alldat = {str(i): v for i, v in enumerate(pvalues)}
     source = ColumnDataSource(data=dict(
         x=county_xs, y=county_ys,
         name=district_name, pvalue=pvalues[0], **alldat))
@@ -280,11 +278,126 @@ def create_bokeh_choro(ff, prop=0):
     show(column(p, widgetbox(slider),))
 
 
+def get_sales_data(fname='TOTALSA.csv'):
+    """Returns car sales data from 1978 to 2019(provisional).
+
+    Keyword Arguments:
+        fname {str} -- Filename from which sales data needs to be pulled (default: {'TOTALSA.csv'})
+    """
+    sales_months = pd.read_csv(fname)
+    dates = sales_months['DATE'].tolist()
+    for ix, date in enumerate(dates):
+        dates[ix] = datetime.strptime(date, '%Y-%m-%d')
+        dates[ix] = int(dates[ix].strftime('%Y'))
+    sales_months['Year'] = dates
+    result = sales_months.groupby(
+        'Year')['TOTALSA'].sum().to_frame().sort_index()
+    result['TOTALSA'] = result['TOTALSA']
+    result.rename(
+        columns={'TOTALSA': 'Total Sales of Personal Vehicles (in millions)'}, inplace=True)
+    return(result)
+
+
+def interpolate_dataframes(ff):
+    """Interploate values for missing years.
+
+    Arguments:
+        ff {dict} -- Dictionary of filled frames
+    """
+    assert isinstance(ff, dict)
+    year_min = ff['CA'][0].index[0]
+    year_max = ff['CA'][0].index[-1]
+    years = list(range(year_min, year_max + 1))
+    for state in ff.keys():
+        for cf in ff[state]:
+            for year in years:
+                if year not in cf.index:
+                    cf.loc[year] = cf.loc[year-1:year+1, :].sum(axis=0)
+                    cf.loc[year] = (cf.loc[year] / 2).astype(np.int64)
+            cf.sort_index(inplace=True)
+    return(ff)
+
+
+def get_car_economy(fname='car_economy.csv'):
+    """Returns national car economy stats for years 1975-2017.
+
+    Keyword Arguments:
+        fname {str} -- CSV fiename from which data needs to be pulled. (default: {'car_economy.csv'})
+    """
+    car_eco = pd.read_csv(fname)
+    car_eco = car_eco.iloc[:-1, :]
+    years = car_eco['Model Year'].astype(int).tolist()
+    emit = car_eco['Real-world MPG'].tolist()
+    car_eco2 = pd.DataFrame(index=years, columns=[
+                            'Real World Fuel Economy (mpg)'])
+    car_eco2['Real World Fuel Economy (mpg)'] = emit
+    car_eco2['Real World Fuel Economy (mpg)'] = car_eco2['Real World Fuel Economy (mpg)'].astype(
+        int)
+    car_eco2.index.name = 'Year'
+    return (car_eco2)
+
+
+def get_us_ridership(fname='ridership_US.csv'):
+    """Returns the US public transportation from 1922-2017.
+
+    Keyword Arguments:
+        fname {str} -- CSV filename from which to pull data (default: {'ridership_US.csv'})
+    """
+    return pd.read_csv(fname, index_col='Year')
+
+
+def combine_for_correlation(df1=get_us_ridership(), df2=get_sales_data()):
+    """Takes fuel economy, ridership and car sales data and combines them for the years in which all 3 are present.
+    """
+    df1.index.astype(int)
+    df2.index.astype(int)
+    temp = pd.concat([df1, df2], axis=1)
+    return temp.dropna()
+
+
+def create_correlation_plot(df):
+    """Create seaborn correlation plot for input data frame.
+
+    Arguments:
+        df {pd Dataframe} -- Dataframe with index as years and column1=data1 and column2=data2.
+    """
+    xdata = df.iloc[:, 0]
+    ydata = df.iloc[:, 1]
+    plt.clf
+    plt.figure(figsize=(20, 18))
+    sns.regplot(xdata, ydata, marker='o', data=df.index)
+    plt.title(f'{df.columns[0]} vs. {df.columns[1]}', color='k')
+    plt.xlabel(f'{df.columns[0]}', color='k')
+    plt.ylabel(f'{df.columns[1]}', color='k')
+    plt.grid(True)
+    plt.xticks(color='k')
+    plt.yticks(color='k')
+    plt.show()
+    plt.savefig(f'corr{df.columns[0][0]}v{df.columns[1][0]}.jpg')
+
+
+def get_mv_deaths(fname='deaths-and-population-ra.csv'):
+    """Get motor vehicle deaths from 1913-2017.
+
+    Keyword Arguments:
+        fname {str} -- File name from which data is to be pulled (default: {'deaths-and-population-ra.csv'})
+    """
+    df = pd.read_csv(fname)
+    df2 = pd.DataFrame(index=df['Category'].astype(
+        int), columns=['Deaths Due to MVs'], dtype=int)
+    df2.index.name = 'Year'
+    data = df.iloc[:, 1].tolist()
+    df2[df2.columns[0]] = data
+    return df2
+
+
 # %%
 start = time.time()
 tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
+# %%
+tp = interpolate_dataframes(tp)
 # %%
 sd = tp["CA"][0]
 
@@ -296,6 +409,7 @@ get_simple_plots(tp, state='NY')
 
 # %% Bokeh Plotting
 create_bokeh_choro(tp, prop=7)
+
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
