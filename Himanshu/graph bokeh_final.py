@@ -5,20 +5,20 @@ import time
 import os
 import collections
 import numpy as np
-from numpy import array
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 import string
 from bokeh.plotting import figure, show, output_file
 #from bokeh.sampledata.us_counties import data as counties
-#from bokeh.sampledata.us_states import data as states
+from bokeh.sampledata.us_states import data as states
 from bokeh.palettes import Greys256 as palette
 from bokeh.layouts import column, row, widgetbox
 from bokeh.models import CustomJS, Slider, Toggle
 from bokeh.models.callbacks import CustomJS
-# For Hover
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
+from datetime import datetime
 %matplotlib qt5
 plt.style.use('fivethirtyeight')
 # %%
@@ -191,8 +191,6 @@ def transform_city_dataframes(filled_frames, ttype=[0]):
                         df.iloc[:, 0], axis='index')
         yield mdf
 
-# %%
-
 
 def create_bokeh_choro(ff, prop=0):
     """Creates Interactive Bokeh Choropleth for US counties transportationdata.
@@ -244,13 +242,12 @@ def create_bokeh_choro(ff, prop=0):
     syear = ff['CA'][0].index[0]
     for ix, yy in enumerate(range(syear, syear + nyears)):
         alldat[str(yy)] = pvalues[ix]
-    # alldat = {str(i): v for i, v in enumerate(pvalues)}
     source = ColumnDataSource(data=dict(
         x=county_xs, y=county_ys,
         name=district_name, pvalue=pvalues[0], **alldat))
     TOOLS = "pan,wheel_zoom,reset,hover,save"
-    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=1800,
-               plot_height=700, x_axis_location=None, y_axis_location=None)
+    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=1200,
+               plot_height=600, x_axis_location=None, y_axis_location=None)
     p.toolbar.active_scroll = "auto"
     p.toolbar.active_drag = 'auto'
     p.background_fill_color = "#B0E0E6"
@@ -264,8 +261,8 @@ def create_bokeh_choro(ff, prop=0):
     property = ff['CA'][0].columns[prop]
     hover.tooltips = [("County", "@name"), (property,
                                             "@pvalue"), ("(Long, Lat)", "($x, $y)")]
-
-    output_file("US_transport.html", title="US Public Transport")
+    output_file(f"{ff['CA'][0].columns[prop].replace(' ','')}.html",
+                title="US Public Transport")
     slider = Slider(start=int(ff['CA'][0].index[0]), end=int(ff['CA'][0].index[-1]),
                     value=int(ff['CA'][0].index[0]), step=1, title="Start Year")
 
@@ -274,12 +271,124 @@ def create_bokeh_choro(ff, prop=0):
             will be translated to JavaScript and Called in Browser """
         data = source.data
         v = cb_obj.getv('value')
-        print(data[v])
         data['pvalue'] = [x for x in data[v]]
         source.trigger('change')
         # source.change.emit()
     slider.js_on_change('value', CustomJS.from_py_func(update))
     show(column(p, widgetbox(slider),))
+
+
+def get_sales_data(fname='TOTALSA.csv'):
+    """Returns car sales data from 1978 to 2019(provisional).
+
+    Keyword Arguments:
+        fname {str} -- Filename from which sales data needs to be pulled (default: {'TOTALSA.csv'})
+    """
+    sales_months = pd.read_csv(fname)
+    dates = sales_months['DATE'].tolist()
+    for ix, date in enumerate(dates):
+        dates[ix] = datetime.strptime(date, '%Y-%m-%d')
+        dates[ix] = int(dates[ix].strftime('%Y'))
+    sales_months['Year'] = dates
+    result = sales_months.groupby(
+        'Year')['TOTALSA'].sum().to_frame().sort_index()
+    result['TOTALSA'] = result['TOTALSA']
+    result.rename(
+        columns={'TOTALSA': 'Total Sales of Personal Vehicles (in millions)'}, inplace=True)
+    return(result)
+
+
+def interpolate_dataframes(ff):
+    """Interploate values for missing years.
+
+    Arguments:
+        ff {dict} -- Dictionary of filled frames
+    """
+    assert isinstance(ff, dict)
+    year_min = ff['CA'][0].index[0]
+    year_max = ff['CA'][0].index[-1]
+    years = list(range(year_min, year_max + 1))
+    for state in ff.keys():
+        for cf in ff[state]:
+            for year in years:
+                if year not in cf.index:
+                    cf.loc[year] = cf.loc[year-1:year+1, :].sum(axis=0)
+                    cf.loc[year] = (cf.loc[year] / 2).astype(np.int64)
+            cf.sort_index(inplace=True)
+    return(ff)
+
+
+def get_car_economy(fname='car_economy.csv'):
+    """Returns national car economy stats for years 1975-2017.
+
+    Keyword Arguments:
+        fname {str} -- CSV fiename from which data needs to be pulled. (default: {'car_economy.csv'})
+    """
+    car_eco = pd.read_csv(fname)
+    car_eco = car_eco.iloc[:-1, :]
+    years = car_eco['Model Year'].astype(int).tolist()
+    emit = car_eco['Real-world MPG'].tolist()
+    car_eco2 = pd.DataFrame(index=years, columns=[
+                            'Real World Fuel Economy (mpg)'])
+    car_eco2['Real World Fuel Economy (mpg)'] = emit
+    car_eco2['Real World Fuel Economy (mpg)'] = car_eco2['Real World Fuel Economy (mpg)'].astype(
+        int)
+    car_eco2.index.name = 'Year'
+    return (car_eco2)
+
+
+def get_us_ridership(fname='ridership_US.csv'):
+    """Returns the US public transportation from 1922-2017.
+
+    Keyword Arguments:
+        fname {str} -- CSV filename from which to pull data (default: {'ridership_US.csv'})
+    """
+    return pd.read_csv(fname, index_col='Year')
+
+
+def combine_for_correlation(df1=get_us_ridership(), df2=get_sales_data()):
+    """Takes fuel economy, ridership and car sales data and combines them for the years in which all 3 are present.
+    """
+    df1.index.astype(int)
+    df2.index.astype(int)
+    temp = pd.concat([df1, df2], axis=1)
+    return temp.dropna()
+
+
+def create_correlation_plot(df):
+    """Create seaborn correlation plot for input data frame.
+
+    Arguments:
+        df {pd Dataframe} -- Dataframe with index as years and column1=data1 and column2=data2.
+    """
+    xdata = df.iloc[:, 0]
+    ydata = df.iloc[:, 1]
+    plt.clf
+    plt.figure(figsize=(20, 18))
+    sns.regplot(xdata, ydata, marker='o', data=df.index)
+    plt.title(f'{df.columns[0]} vs. {df.columns[1]}', color='k')
+    plt.xlabel(f'{df.columns[0]}', color='k')
+    plt.ylabel(f'{df.columns[1]}', color='k')
+    plt.grid(True)
+    plt.xticks(color='k')
+    plt.yticks(color='k')
+    plt.show()
+    plt.savefig(f'corr{df.columns[0][0]}v{df.columns[1][0]}.jpg')
+
+
+def get_mv_deaths(fname='deaths-and-population-ra.csv'):
+    """Get motor vehicle deaths from 1913-2017.
+
+    Keyword Arguments:
+        fname {str} -- File name from which data is to be pulled (default: {'deaths-and-population-ra.csv'})
+    """
+    df = pd.read_csv(fname)
+    df2 = pd.DataFrame(index=df['Category'].astype(
+        int), columns=['Deaths Due to MVs'], dtype=int)
+    df2.index.name = 'Year'
+    data = df.iloc[:, 1].tolist()
+    df2[df2.columns[0]] = data
+    return df2
 
 
 # %%
@@ -288,7 +397,9 @@ tp = create_city_dataframes()
 end = time.time()
 print(f'Time to compute dataframes: {end-start:.2f}')
 # %%
-sd = tp["CA"][1]
+tp = interpolate_dataframes(tp)
+# %%
+sd = tp["CA"][0]
 
 # %%
 h = next(transform_city_dataframes(tp, ttype=[0]))
@@ -297,7 +408,8 @@ h = next(transform_city_dataframes(tp, ttype=[0]))
 get_simple_plots(tp, state='NY')
 
 # %% Bokeh Plotting
-create_bokeh_choro(tp, prop=1)
+create_bokeh_choro(tp, prop=7)
+
 # %%
 # datasets = get_xls()
 datasets = ['2009_Fact_Book_Appendix_B.xlsx']
@@ -318,222 +430,70 @@ for excel in datasets:
 print(dataset_index)
 
 # %%
-def graph_year_property(tp,yr=2007, p_no=0):
+def graph_year_property(h, p_no=0):
     '''
     Creates bar graphs for particular year and property
     '''
-    assert yr>=2006 and yr<=2017
-    i = 0
-    yr_ind=0
-    p_value = [[0 for x in range(3)] for x in range(18)]
-    years=[2006,2007,2008,2009,2010,2011,2012,2014,2015,2017]
-    for v in years:
-        if v == yr:
-            break
-        yr_ind=yr_ind+1
-    for state, city_list in tp.items():
-        city_p = [d.get(str(col_index_names_p[p_no])) for d in city_list]
-        a = array(city_p)
-        col=0
-        for row in a:
-            p_value[i][col] = row[yr_ind]
-            col=col+1
-        i=i+1
-    N = 18
-    ind = np.arange(N)
-    width = 0.35
-    xlabels=[]
+    from bokeh.core.properties import value
+    from bokeh.plotting import figure
+    from bokeh.io import show, output_file
+    from bokeh.layouts import row, column
+    from bokeh.models import ColumnDataSource
+    from bokeh.models.widgets import Dropdown
+    from bokeh.models.callbacks import CustomJS
+    assert yr >= 2006 and yr <= 2017
+    output_file("bars.html")
+    xlabels = []
+    
     for key, value in cities.items():
-        z = ",\n"
-        z = z.join(value)
-        xlabels.append(key + ': ' + z)
-    p1 = plt.bar(ind, [row[0] for row in p_value], width)
-    p2 = plt.bar(ind, [row[1] for row in p_value], width, bottom=[row[0] for row in p_value])
-    p3 = plt.bar(ind, [row[2] for row in p_value], width, bottom=np.array([row[0] for row in p_value])+np.array([row[1] for row in p_value]))
-    plt.ylabel(col_index_names_p[p_no], color='black',fontsize=10)
-    plt.title('Year '+str(yr),fontsize=12)
-    plt.xticks(ind, xlabels)
-    plt.tick_params(axis='y',labelsize=8)
-    plt.tick_params(axis='x',labelsize=6,labelrotation=90)
-    plt.show()
+        xlabels.append(key + ': ' + value[0])
+    
+    yr_ind = 0
 
+    p_values = []
+    for yr_ind in range(12):
+        i = 0
+        p_value = [0 for x in range(18)]
+        for state, city_list in h.items():
+            city_p = [d.get(str(col_index_names1000[p_no])) for d in city_list]
+            a = array(city_p)
+            col = 0
+            for row in a:
+                if col == 2:
+                    break
+                p_value[i] = row[yr_ind]
+                col = col + 1
+            i = i + 1
+        p_values.append(p_value)
+    print(p_values[0])
+    # cs = ['C1']
+    # colors = ["#e84d60", "#718dbf", "#c9d9d3"]
+    # alldat = {}
+    # for yx, yy in enumerate(range(12)):
+    #     alldat[str(yy)]=p_values[yx]
+    # data = dict(xlabels= xlabels,
+    #         C1= [row[0] for row in p_values[0]],**alldat)
+    # source = ColumnDataSource(data)
+    p = figure(x_range=xlabels, plot_height=450, plot_width=800, title='Year', toolbar_location=None, tools="")
+    p.vbar(x=xlabels, top=p_values[0], width=0.4)
+    #p.y_range.start = 0
+    p.x_range.range_padding = 0.1
+    p.title.align = 'center'
+    p.yaxis.axis_label = col_index_names1000[p_no]
+    p.yaxis.axis_label_text_font_size = '12pt'
+    p.xaxis.major_label_orientation = 3.14/2
+    p.xaxis.major_label_text_font_size = '12pt'
+    p.axis.minor_tick_line_color = 'black'
+    p.outline_line_color = 'black'
+    show(p)
+    slider = Slider(start=0, end=9, value=0, step=1, title="Start Year")
 
-# %%
-yr = 2007
-p_no = 3
-from bokeh.core.properties import value
-from bokeh.plotting import figure
-from bokeh.io import show, output_file
-from bokeh.layouts import row, column
-from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import Dropdown
-from bokeh.models.callbacks import CustomJS
-
-output_file("bars.html")
-xlabels=[]
-for key, value in cities.items():
-    z = ",\n"
-    z = z.join(value)
-    xlabels.append(key + ': ' + z)
-
-i = 0
-yr_ind=0
-p_value = [[0 for x in range(3)] for x in range(18)]
-years=[2006,2007,2008,2009,2010,2011,2012,2014,2015,2017]
-for v in years:
-    if v == yr:
-        break
-    yr_ind=yr_ind+1
-for state, city_list in tp.items():
-    city_p = [d.get(str(col_index_names_p[p_no])) for d in city_list]
-    a = array(city_p)
-    col=0
-    for row in a:
-        p_value[i][col] = row[yr_ind]
-        col = col + 1
-    i = i + 1
-
-cs = ['C1', 'C2', 'C3']
-colors = ["#e84d60", "#718dbf", "#c9d9d3"]
-data = {'xlabels': xlabels,
-        'C1': [row[0] for row in p_value],
-        'C2': [row[1] for row in p_value],
-        'C3': [row[2] for row in p_value]}
-p = figure(x_range=xlabels, plot_height=450, title='Year ' + str(yr), toolbar_location=None, tools="")
-p.vbar_stack(cs, x='xlabels', width=0.4, color=colors, source=data)
-p.y_range.start = 0
-p.x_range.range_padding = 0.1
-p.title.align = 'center'
-p.yaxis.axis_label = col_index_names_p[p_no]
-p.yaxis.axis_label_text_font_size = '9pt'
-p.xaxis.major_label_orientation = 3.14/2
-p.xaxis.major_label_text_font_size = '8pt'
-p.axis.minor_tick_line_color = 'black'
-p.outline_line_color = 'black'
-show(p)
-
-
-# %%
-yr = 2007
-p_no = 3
-from bokeh.core.properties import value
-from bokeh.plotting import figure
-from bokeh.io import show, output_file
-from bokeh.layouts import row, column
-from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import Dropdown
-from bokeh.models.callbacks import CustomJS
-
-output_file("bars.html")
-xlabels=[]
-for key, value in cities.items():
-    z = ",\n"
-    z = z.join(value)
-    xlabels.append(key + ': ' + z)
-
-
-yr_ind=0
-p_value = [[0 for x in range(3)] for x in range(18)]
-
-p_values = []
-for yr_ind in range(10):
-    i = 0
-    p_value = [[0 for x in range(3)] for x in range(18)]
-    for state, city_list in tp.items():
-        city_p = [d.get(str(col_index_names_p[p_no])) for d in city_list]
-        a = array(city_p)
-        col = 0
-        for row in a:
-            p_value[i][col] = row[yr_ind]
-            col = col + 1
-        i = i + 1
-    print(p_value)
-    print("faltu")
-    p_values.append(p_value)
-
-cs = ['C1', 'C2', 'C3']
-colors = ["#e84d60", "#718dbf", "#c9d9d3"]
-data = {'xlabels': xlabels,
-        'C1': [row[0] for row in p_value],
-        'C2': [row[1] for row in p_value],
-        'C3': [row[2] for row in p_value]}
-p = figure(x_range=xlabels, plot_height=450, title='Year ' + str(yr), toolbar_location=None, tools="")
-p.vbar_stack(cs, x='xlabels', width=0.4, color=colors, source=data)
-p.y_range.start = 0
-p.x_range.range_padding = 0.1
-p.title.align = 'center'
-p.yaxis.axis_label = col_index_names_p[p_no]
-p.yaxis.axis_label_text_font_size = '9pt'
-p.xaxis.major_label_orientation = 3.14/2
-p.xaxis.major_label_text_font_size = '8pt'
-p.axis.minor_tick_line_color = 'black'
-p.outline_line_color = 'black'
-show(p)
-
-
-#%%
-
-output_file("bars.html")
-xlabels=[]
-for key, value in cities.items():
-    z = ",\n"
-    z = z.join(value)
-    xlabels.append(key + ': ' + z)
-
-
-yr_ind=0
-
-
-p_values = []
-for yr_ind in range(10):
-    i = 0
-    p_value = [[0 for x in range(3)] for x in range(18)]
-    for state, city_list in tp.items():
-        city_p = [d.get(str(col_index_names_p[p_no])) for d in city_list]
-        a = array(city_p)
-        col = 0
-        for row in a:
-            p_value[i][col] = row[yr_ind]
-            col = col + 1
-        i = i + 1
-    p_values.append(p_value)
-
-cs = ['C1', 'C2', 'C3']
-colors = ["#e84d60", "#718dbf", "#c9d9d3"]
-alldat = {}
-for yx, yy in enumerate(range(10)):
-    alldat[str(yy)]=p_values[yx]
-data = dict(xlabels= xlabels,
-        C1= [row[0] for row in p_values[0]],
-        C2= [row[1] for row in p_values[0]],
-        C3= [row[2] for row in p_values[0]],**alldat)
-source=ColumnDataSource(data)
-p = figure(x_range=xlabels, plot_height=450, title='Year ' + str(yr), toolbar_location=None, tools="")
-p.vbar_stack(cs, x='xlabels', width=0.4, color=colors, source=source)
-p.y_range.start = 0
-p.x_range.range_padding = 0.1
-p.title.align = 'center'
-p.yaxis.axis_label = col_index_names_p[p_no]
-p.yaxis.axis_label_text_font_size = '9pt'
-p.xaxis.major_label_orientation = 3.14/2
-p.xaxis.major_label_text_font_size = '8pt'
-p.axis.minor_tick_line_color = 'black'
-p.outline_line_color = 'black'
-# show(p)
-slider = Slider(start=0, end=9,
-                    value=0, step=1, title="Start Year")
-
-def update(source=source, slider=slider, window=None):
-    """ Update the map: change the bike density measure according to slider
-        will be translated to JavaScript and Called in Browser """
-    source.data = data
-    v = cb_obj.getv('value')
-    data['C1'] = [x for x in data[v][0]]
-    data['C2'] = [x for x in data[v][1]]
-    data['C3'] = [x for x in data[v][2]]
-    source.trigger('change')
-    # source.change.emit()
-slider.js_on_change('value', CustomJS.from_py_func(update))
-show(column(p, widgetbox(slider),))
-
-#%%
+    def update(source=source, slider=slider, window=None):
+        """ Update the map: change the bike density measure according to slider
+            will be translated to JavaScript and Called in Browser """
+        source.data = data
+        v = cb_obj.getv('value')
+        data['C1'] = [x for x in data[v][0]]
+        source.trigger('change')
+    slider.js_on_change('value', CustomJS.from_py_func(update))
+    #show(column(p, widgetbox(slider),))
