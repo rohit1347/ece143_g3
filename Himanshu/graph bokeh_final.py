@@ -5,6 +5,7 @@ import time
 import os
 import collections
 import numpy as np
+from numpy import array
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -441,7 +442,6 @@ def graph_year_property(h, p_no=0):
     from bokeh.models import ColumnDataSource
     from bokeh.models.widgets import Dropdown
     from bokeh.models.callbacks import CustomJS
-    assert yr >= 2006 and yr <= 2017
     output_file("bars.html")
     xlabels = []
     
