@@ -12,7 +12,7 @@ import string
 from bokeh.plotting import figure, show, output_file
 from bokeh.sampledata.us_counties import data as counties
 from bokeh.sampledata.us_states import data as states
-from bokeh.palettes import Greys256 as palette
+from bokeh.palettes import Viridis as palette
 from bokeh.layouts import column, row, widgetbox
 from bokeh.models import CustomJS, Slider, Toggle
 from bokeh.models.callbacks import CustomJS
@@ -246,8 +246,8 @@ def create_bokeh_choro(ff, prop=0):
         x=county_xs, y=county_ys,
         name=district_name, pvalue=pvalues[0], **alldat))
     TOOLS = "pan,wheel_zoom,reset,hover,save"
-    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=1200,
-               plot_height=600, x_axis_location=None, y_axis_location=None)
+    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=800,
+               plot_height=400, x_axis_location=None, y_axis_location=None)
     p.toolbar.active_scroll = "auto"
     p.toolbar.active_drag = 'auto'
     p.background_fill_color = "#B0E0E6"
@@ -366,9 +366,9 @@ def create_correlation_plot(df):
     plt.clf
     plt.figure(figsize=(20, 18))
     sns.regplot(xdata, ydata, marker='o', data=df.index)
-    plt.title(f'{df.columns[0]} vs. {df.columns[1]}', color='k')
-    plt.xlabel(f'{df.columns[0]}', color='k')
-    plt.ylabel(f'{df.columns[1]}', color='k')
+    plt.title(f'{df.columns[0]} vs. {df.columns[1]}', color='k',fontsize=16)
+    plt.xlabel(f'{df.columns[0]}', color='k', fontsize=24)
+    plt.ylabel(f'{df.columns[1]}', color='k', fontsize=24)
     plt.grid(True)
     plt.xticks(color='k')
     plt.yticks(color='k')
@@ -402,13 +402,13 @@ tp = interpolate_dataframes(tp)
 sd = tp["CA"][0]
 
 # %%
-h = next(transform_city_dataframes(tp, ttype=[1]))
+h = next(transform_city_dataframes(tp, ttype=[0]))
 
 # %% Plotting
-get_simple_plots(tp, state='NY')
+get_simple_plots(h, state='NY')
 
 # %% Bokeh Plotting
-create_bokeh_choro(tp, prop=7)
+create_bokeh_choro(h, prop=5)
 
 # %%
 # datasets = get_xls()
