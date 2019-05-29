@@ -12,13 +12,17 @@ import string
 from bokeh.plotting import figure, show, output_file
 from bokeh.sampledata.us_counties import data as counties
 from bokeh.sampledata.us_states import data as states
-from bokeh.palettes import Viridis as palette
+from bokeh.palettes import Reds as palette
 from bokeh.layouts import column, row, widgetbox
 from bokeh.models import CustomJS, Slider, Toggle
 from bokeh.models.callbacks import CustomJS
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
 from datetime import datetime
+import plotly
+import plotly.graph_objs as go
+import plotly.tools as tls
+import matplotlib.lines as mlines
 %matplotlib qt5
 plt.style.use('fivethirtyeight')
 # %%
@@ -242,18 +246,19 @@ def create_bokeh_choro(ff, prop=0):
     syear = ff['CA'][0].index[0]
     for ix, yy in enumerate(range(syear, syear + nyears)):
         alldat[str(yy)] = pvalues[ix]
-    source = ColumnDataSource(data=dict(
+    source_available = ColumnDataSource(data=alldat)
+    source_visible = ColumnDataSource(data=dict(
         x=county_xs, y=county_ys,
-        name=district_name, pvalue=pvalues[0], **alldat))
+        name=district_name, pvalue=pvalues[0]))
     TOOLS = "pan,wheel_zoom,reset,hover,save"
-    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=800,
+    p = figure(title=f"{ff['CA'][0].columns[prop]} across Counties", tools=TOOLS, plot_width=850,
                plot_height=400, x_axis_location=None, y_axis_location=None)
     p.toolbar.active_scroll = "auto"
     p.toolbar.active_drag = 'auto'
     p.background_fill_color = "#B0E0E6"
     p.patches(state_xs, state_ys, fill_alpha=1.0, fill_color='#FFFFE0',
               line_color="#884444", line_width=2, line_alpha=0.3)
-    p.patches('x', 'y', source=source,
+    p.patches('x', 'y', source=source_visible,
               fill_color={'field': 'pvalue', 'transform': color_mapper},
               fill_alpha=0.8, line_color="white", line_width=0.3)
     hover = p.select_one(HoverTool)
@@ -264,17 +269,19 @@ def create_bokeh_choro(ff, prop=0):
     output_file(f"{ff['CA'][0].columns[prop].replace(' ','')}.html",
                 title="US Public Transport")
     slider = Slider(start=int(ff['CA'][0].index[0]), end=int(ff['CA'][0].index[-1]),
-                    value=int(ff['CA'][0].index[0]), step=1, title="Start Year")
-
-    def update(source=source, slider=slider, window=None):
-        """ Update the map: change the bike density measure according to slider
-            will be translated to JavaScript and Called in Browser """
-        data = source.data
-        v = cb_obj.getv('value')
-        data['pvalue'] = [x for x in data[v]]
-        source.trigger('change')
-        # source.change.emit()
-    slider.js_on_change('value', CustomJS.from_py_func(update))
+                    value=int(ff['CA'][0].index[0]), step=1, title="Year")
+    slider.callback = CustomJS(
+        args=dict(source_visible=source_visible,
+                  source_available=source_available), code="""
+        var selected_year = cb_obj.value;
+        // Get the data from the data sources
+        var data_visible = source_visible.data;
+        var data_available = source_available.data;
+        // Change y-axis data according to the selected value
+        data_visible.pvalue = data_available[selected_year];
+        // Update the plot
+        source_visible.change.emit();
+    """)
     show(column(p, widgetbox(slider),))
 
 
@@ -352,6 +359,7 @@ def combine_for_correlation(df1=get_us_ridership(), df2=get_sales_data()):
     df1.index.astype(int)
     df2.index.astype(int)
     temp = pd.concat([df1, df2], axis=1)
+    temp.index.name='Year'
     return temp.dropna()
 
 
@@ -366,7 +374,7 @@ def create_correlation_plot(df):
     plt.clf
     plt.figure(figsize=(20, 18))
     sns.regplot(xdata, ydata, marker='o', data=df.index)
-    plt.title(f'{df.columns[0]} vs. {df.columns[1]}', color='k',fontsize=16)
+    plt.title(f'{df.columns[0]} vs. {df.columns[1]}', color='k', fontsize=16)
     plt.xlabel(f'{df.columns[0]}', color='k', fontsize=24)
     plt.ylabel(f'{df.columns[1]}', color='k', fontsize=24)
     plt.grid(True)
@@ -390,7 +398,31 @@ def get_mv_deaths(fname='deaths-and-population-ra.csv'):
     df2[df2.columns[0]] = data
     return df2
 
+#%%
+def get_fuel_usage(fname='2019-APTA-Fact-Book-Appendix-A.xlsx'):
+    fc = pd.read_excel(fname, sheet_name='59', index_col=0)
+    fc = fc.iloc[3:,0:1].dropna()
+    fc.index.name = 'Year'
+    fc.columns = ['Diesel Usage']
+    fc['Diesel Usage']=fc['Diesel Usage'].astype(str)
+    fc['Diesel Usage'] = fc['Diesel Usage'].str.extract('(\d+)', expand=False)
+    fc['Diesel Usage'] = fc['Diesel Usage'].astype(int)
+    fc['Diesel Usage'] = fc['Diesel Usage'] * 1e6
+    return fc
 
+def get_bus_miles(fname='2019-APTA-Fact-Book-Appendix-A.xlsx'):
+    fc = pd.read_excel(fname,
+                    sheet_name='3', index_col=0)
+    fc = fc.iloc[5:-9, [0, 3]]
+    fc.dropna()
+    mc = pd.DataFrame(index=fc.index, columns=['Bus Miles'])
+    mc.index.name = 'Year'
+    mc['Bus Miles'] = fc.iloc[:, 1].tolist()
+    mc['Bus Miles'] = mc['Bus Miles'].astype(str)
+    mc['Bus Miles'] = mc['Bus Miles'].str.extract('(\d+)', expand=False)
+    mc['Bus Miles'] = mc['Bus Miles'].astype(int)
+    mc['Bus Miles'] = mc['Bus Miles'] * 1e6
+    return mc
 # %%
 start = time.time()
 tp = create_city_dataframes()
@@ -411,23 +443,29 @@ get_simple_plots(h, state='NY')
 create_bokeh_choro(h, prop=5)
 
 # %%
-# datasets = get_xls()
-datasets = ['2009_Fact_Book_Appendix_B.xlsx']
-dataset_index = dict()
-for excel in datasets:
-    sheet = pd.read_excel(excel, sheet_name='UZA Totals', index_col=2)
-    cnames = list(sheet.columns)
-    print(len(cnames))
+temp1=combine_for_correlation(df1=get_fuel_usage(), df2=get_bus_miles())
+temp2 = combine_for_correlation(df1=temp1, df2=get_car_economy())
+temp2.loc[2007, 'Bus Miles'] = temp2.loc[2007, 'Bus Miles']*1e3
+temp2['Car Fuel Usage'] = temp2['Bus Miles'].div(
+temp2['Real World Fuel Economy (mpg)'])
+#%%
+plotly.offline.init_notebook_mode(connected=True)
+fig, ax = plt.subplots()
+fig.set_figheight(6)
+fig.set_figwidth(12)
+ax.set_xlabel('Years')
+ax.set_ylabel('Fuel Consumption (gallons)')
 
-    cindexer = {}  # City indexer
-    for state in cities.keys():
-        cindexer[state] = list()
-        for city in cities[state]:
-            truevals = sheet[cnames[0]].str.contains(city)
-            temp_index = [i for i, x in enumerate(truevals) if x][-1]
-            cindexer[state].append(temp_index)
-    dataset_index[excel] = cindexer
-print(dataset_index)
-
+ax.plot(temp2['Car Fuel Usage'], label='Car Fuel Usage',color='#80D9FF')
+ax.plot(temp2['Diesel Usage'], label='Bus Fuel Usage', color='#BFFF00')
+patch2 = mlines.Line2D([], [], color='#BFFF00', marker='*',
+                       markersize=15, label='Bus Fuel Usage')
+patch1 = mlines.Line2D([], [], color='#80D9FF', marker='*',
+                       markersize=15, label='Car Fuel Usage')
+# ax.legend(loc="upper right",handles=[patch1,patch2])
+update = {'data': [{'fill': 'tozeroy'}]}  # this updates BOTH traces now
+plotly_fig = tls.mpl_to_plotly(fig)
+plotly_fig.update(update)
+plotly.offline.plot(plotly_fig, filename='mpl-multi-fill')
 
 # %%
