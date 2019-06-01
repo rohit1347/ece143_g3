@@ -1,0 +1,87 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    
+      <meta charset="utf-8">
+      <title>Bokeh Plot</title>
+      
+      
+        
+          
+        <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-1.1.0.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-1.1.0.min.css" type="text/css" />
+        
+        
+          
+        <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-1.1.0.min.js"></script>
+        <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-1.1.0.min.js"></script>
+        <script type="text/javascript">
+            Bokeh.set_log_level("info");
+        </script>
+        
+      
+      
+    
+  </head>
+  
+  
+  <body>
+    
+      
+        
+          
+          
+            
+              <div class="bk-root" id="15fe1683-f458-487d-82c4-173b74963586" data-root-id="2119"></div>
+            
+          
+        
+      
+      
+        <script type="application/json" id="2199">
+          {"b60477cb-78f2-44b6-b48b-fdcd6c4388a8":{"roots":{"references":[{"attributes":{},"id":"2089","type":"BasicTicker"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_multi":null,"active_scroll":"auto","active_tap":"auto","tools":[{"id":"2093","type":"PanTool"},{"id":"2094","type":"WheelZoomTool"},{"id":"2095","type":"ResetTool"},{"id":"2096","type":"HoverTool"},{"id":"2097","type":"SaveTool"}]},"id":"2098","type":"Toolbar"},{"attributes":{"dimension":1,"ticker":{"id":"2089","type":"BasicTicker"}},"id":"2092","type":"Grid"},{"attributes":{"fill_alpha":{"value":0.7},"fill_color":{"value":"#4f3fe0"},"line_alpha":{"value":0.7},"line_color":{"value":"#4f3fe0"},"top":{"field":"pvalue"},"width":{"value":0.4},"x":{"field":"counties"}},"id":"2105","type":"VBar"},{"attributes":{"callback":null},"id":"2078","type":"DataRange1d"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"top":{"field":"pvalue"},"width":{"value":0.4},"x":{"field":"counties"}},"id":"2106","type":"VBar"},{"attributes":{"callback":null,"tooltips":[["County","@counties"],["Unlinked Passenger Trips (per 1000 persons)","$y"]]},"id":"2096","type":"HoverTool"},{"attributes":{},"id":"2093","type":"PanTool"},{"attributes":{"axis_label":"In thousands","axis_label_text_font_size":{"value":"12pt"},"formatter":{"id":"2115","type":"BasicTickFormatter"},"major_label_text_font_size":{"value":"12pt"},"ticker":{"id":"2089","type":"BasicTicker"}},"id":"2088","type":"LinearAxis"},{"attributes":{},"id":"2094","type":"WheelZoomTool"},{"attributes":{},"id":"2117","type":"Selection"},{"attributes":{"callback":null,"data":{"2006":[140.26537493378157,62.177706699899154,26.808981744712707,199.82976316500447,73.51427435849043,13.146292556419736,42.44289910395905,21.881491855670017,22.12921144432034,40.88464272024532,37.34570134098862,43.61525920619159,51.505938645284346,43.47962597870782,95.88981059813258,117.18281612234105,99.82920206855644,35.65418470204008],"2007":[141.13344520221685,67.06841850081392,26.418956763738162,227.75402571963906,74.55687980987744,12.696518937320173,45.281555728261864,22.53119192418382,22.644028360031083,40.904926942347885,39.306837251504405,47.456656222747185,55.588930556918704,46.58345068439137,90.31482827954183,118.23595802659942,101.90174635398826,37.20424534443499],"2008":[136.9583786186294,72.08413191480734,26.27664918512945,233.67086799160958,78.19103542843057,13.623463990283284,46.54460461049649,23.53073055758831,24.97009613529046,39.45780247510747,41.632206789608325,50.97300453577001,50.34261087360587,46.993418577141895,93.73846071056946,122.46723420913493,99.29233815383844,39.68830478863498],"2009":[137.3531469473658,69.8825516507786,23.213459798263393,225.81241050140795,76.24841536445292,13.985330907058168,48.2062657150041,21.268148166067782,26.877906082766412,40.104598274178386,42.113354352978305,49.55260168200841,51.07167763400659,41.929788768095534,93.12866387070598,125.89675972058404,109.91665761603605,37.5214936156976],"2010":[131.64837352354968,69.87663137557814,21.300714007475197,229.25353080004393,75.56481033001828,13.313371472957902,45.003268720855814,22.221538044168508,23.530638458450472,38.663886886128644,42.16514886217769,49.1502738944092,43.68228571080764,43.21957528305076,90.23280960321233,121.04353596412737,104.12679655017808,38.39155687050912],"2011":[128.9179909740669,63.2277745945029,16.47446409343062,223.40167851914538,75.10897331941793,13.5692032061359,33.12120026956524,18.552061679584988,18.900959573052816,37.826537197790124,37.82521081210274,41.24911686153206,30.056075494787677,39.64542816939749,93.12026541854988,104.3139078262045,93.54767782528452,35.42783178479681],"2012":[132.83700413140022,64.31562437385455,16.45934759235423,227.8710992875434,77.1068863577646,12.842103430822503,31.910614053756685,19.364289421628104,19.893199001188716,39.086224726086925,36.97685112570053,41.57852087626879,34.541116674292994,41.484099279015865,98.00230565802262,105.83647708518194,96.29960533809204,35.4086337041522],"2013":[136.05108447732118,66.04808993156486,16.91959601418351,232.68130739547263,75.28613911280954,11.603329325217121,31.178423752037187,19.715532308164892,20.361016766075686,38.56821368362831,37.81120895481513,42.79435288389409,34.63869881989023,43.40042183887674,98.98259012934408,104.19529799837359,90.17634296580884,36.1137727329312],"2014":[139.26516512800757,67.78055548927517,17.37984443601279,237.49151561238594,73.4653918678545,10.364555219611736,30.446233450317685,20.066775856727105,20.828834806511995,38.050203217919865,38.64556678392973,44.01018531271336,34.73628149570708,45.3167453779365,99.96287460066553,102.55411934760188,84.05308059352565,36.81891213894202],"2015":[139.67397169094835,68.64644065015511,17.528225653131706,232.45863477209647,73.28497359729226,10.086229041078282,31.93899968087125,20.083302659488545,20.067063476099122,38.96158959265866,36.50384777212625,43.16358879169135,38.14349280041315,45.749723621116615,99.30212323837802,102.42513773308886,87.85724255070976,37.228847292796004],"2016":[133.06360576518676,69.62004489125785,17.754867998346388,230.03186140269665,70.84834543960834,10.0082560945237,30.72745319980272,16.813535242261583,20.072427870824672,38.28442664977943,34.60639444705859,40.39255320627596,37.72250267893453,39.22594426595825,96.60395922620778,97.00290967281988,77.49786058899295,36.595557718351195],"2017":[126.45324014419063,70.59364913236057,17.981510545812863,227.60508803329682,68.41171728192441,9.930283415771983,29.515906718734186,13.543768487060051,20.077792265550215,37.60726370690018,32.70894112199093,37.62151762086056,37.30151255745592,32.70216491079988,93.90579545321368,91.58068161255088,4.372336869513203,35.96226814390639]},"selected":{"id":"2128","type":"Selection"},"selection_policy":{"id":"2127","type":"UnionRenderers"}},"id":"2071","type":"ColumnDataSource"},{"attributes":{"children":[{"id":"2109","type":"Slider"}]},"id":"2118","type":"WidgetBox"},{"attributes":{},"id":"2127","type":"UnionRenderers"},{"attributes":{"below":[{"id":"2084","type":"CategoricalAxis"}],"center":[{"id":"2087","type":"Grid"},{"id":"2092","type":"Grid"}],"left":[{"id":"2088","type":"LinearAxis"}],"outline_line_color":{"value":"black"},"plot_height":450,"plot_width":800,"renderers":[{"id":"2107","type":"GlyphRenderer"}],"title":{"id":"2074","type":"Title"},"toolbar":{"id":"2098","type":"Toolbar"},"toolbar_location":null,"x_range":{"id":"2076","type":"FactorRange"},"x_scale":{"id":"2080","type":"CategoricalScale"},"y_range":{"id":"2078","type":"DataRange1d"},"y_scale":{"id":"2082","type":"LinearScale"}},"id":"2073","subtype":"Figure","type":"Plot"},{"attributes":{"ticker":{"id":"2085","type":"CategoricalTicker"}},"id":"2087","type":"Grid"},{"attributes":{},"id":"2128","type":"Selection"},{"attributes":{},"id":"2080","type":"CategoricalScale"},{"attributes":{"source":{"id":"2072","type":"ColumnDataSource"}},"id":"2108","type":"CDSView"},{"attributes":{"formatter":{"id":"2113","type":"CategoricalTickFormatter"},"major_label_orientation":1.57,"major_label_text_font_size":{"value":"12pt"},"ticker":{"id":"2085","type":"CategoricalTicker"}},"id":"2084","type":"CategoricalAxis"},{"attributes":{"callback":null,"factors":["CA: San Diego","WA: Seattle","TX: Austin","NY: New York","IL: Chicago","MI: Detroit","GA: Atlanta","FL: Miami","AZ: Phoenix","PA: Philadelphia","WI: Milwaukee","CO: Denver","NV: Las Vegas","UT: Salt Lake City","MA: Boston","DC: Washington, DC","HI: Honolulu","MN: Minneapolis"],"range_padding":0.1},"id":"2076","type":"FactorRange"},{"attributes":{},"id":"2085","type":"CategoricalTicker"},{"attributes":{"align":"center","text":"Unlinked Passenger Trips (per 1000 persons)","text_font_size":{"value":"14pt"}},"id":"2074","type":"Title"},{"attributes":{},"id":"2095","type":"ResetTool"},{"attributes":{"children":[{"id":"2073","subtype":"Figure","type":"Plot"},{"id":"2118","type":"WidgetBox"}]},"id":"2119","type":"Column"},{"attributes":{},"id":"2097","type":"SaveTool"},{"attributes":{"align":"center","bar_color":"#4f3fe0","callback":{"id":"2110","type":"CustomJS"},"end":2017,"start":2006,"title":"Year","value":2006},"id":"2109","type":"Slider"},{"attributes":{"data_source":{"id":"2072","type":"ColumnDataSource"},"glyph":{"id":"2105","type":"VBar"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"2106","type":"VBar"},"selection_glyph":null,"view":{"id":"2108","type":"CDSView"}},"id":"2107","type":"GlyphRenderer"},{"attributes":{"args":{"source_available":{"id":"2071","type":"ColumnDataSource"},"source_visible":{"id":"2072","type":"ColumnDataSource"}},"code":"\n        var selected_year = cb_obj.value;\n        // Get the data from the data sources\n        var data_visible = source_visible.data;\n        var data_available = source_available.data;\n        // Change y-axis data according to the selected value\n        data_visible.pvalue = data_available[selected_year];\n        // Update the plot\n        source_visible.change.emit();\n    "},"id":"2110","type":"CustomJS"},{"attributes":{},"id":"2115","type":"BasicTickFormatter"},{"attributes":{},"id":"2082","type":"LinearScale"},{"attributes":{},"id":"2116","type":"UnionRenderers"},{"attributes":{"callback":null,"data":{"counties":["CA: San Diego","WA: Seattle","TX: Austin","NY: New York","IL: Chicago","MI: Detroit","GA: Atlanta","FL: Miami","AZ: Phoenix","PA: Philadelphia","WI: Milwaukee","CO: Denver","NV: Las Vegas","UT: Salt Lake City","MA: Boston","DC: Washington, DC","HI: Honolulu","MN: Minneapolis"],"pvalue":[140.26537493378157,62.177706699899154,26.808981744712707,199.82976316500447,73.51427435849043,13.146292556419736,42.44289910395905,21.881491855670017,22.12921144432034,40.88464272024532,37.34570134098862,43.61525920619159,51.505938645284346,43.47962597870782,95.88981059813258,117.18281612234105,99.82920206855644,35.65418470204008]},"selected":{"id":"2117","type":"Selection"},"selection_policy":{"id":"2116","type":"UnionRenderers"}},"id":"2072","type":"ColumnDataSource"},{"attributes":{},"id":"2113","type":"CategoricalTickFormatter"}],"root_ids":["2119"]},"title":"Bokeh Application","version":"1.1.0"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('2199').textContent;
+                  var render_items = [{"docid":"b60477cb-78f2-44b6-b48b-fdcd6c4388a8","roots":{"2119":"15fe1683-f458-487d-82c4-173b74963586"}}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    
+  </body>
+  
+</html>
