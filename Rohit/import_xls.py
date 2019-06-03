@@ -400,8 +400,6 @@ def get_mv_deaths(fname='deaths-and-population-ra.csv'):
     df2[df2.columns[0]] = data
     return df2
 
-# %%
-
 
 def get_fuel_usage(fname='2019-APTA-Fact-Book-Appendix-A.xlsx'):
     fc = pd.read_excel(fname, sheet_name='59', index_col=0)
@@ -428,28 +426,6 @@ def get_bus_miles(fname='2019-APTA-Fact-Book-Appendix-A.xlsx'):
     mc['Bus Miles'] = mc['Bus Miles'].astype(int)
     mc['Bus Miles'] = mc['Bus Miles'] * 1e6
     return mc
-
-
-# %%
-start = time.time()
-tp = create_city_dataframes()
-end = time.time()
-print(f'Time to compute dataframes: {end-start:.2f}')
-# %%
-tp = interpolate_dataframes(tp)
-# %%
-sd = tp["CA"][0]
-
-# %%
-h = next(transform_city_dataframes(tp, ttype=[0]))
-
-# %% Plotting
-get_simple_plots(h, state='NY')
-
-# %% Bokeh Plotting
-create_bokeh_choro(h, prop=5)
-
-# %%
 
 
 def create_fuelsaved_plot():
@@ -481,4 +457,22 @@ def create_fuelsaved_plot():
     plotly_fig.update(update)
     plotly.offline.plot(plotly_fig, filename='mpl-multi-fill')
 
+
 # %%
+start = time.time()
+tp = create_city_dataframes()
+end = time.time()
+print(f'Time to compute dataframes: {end-start:.2f}')
+# %%
+tp = interpolate_dataframes(tp)
+# %%
+sd = tp["CA"][0]
+
+# %%
+h = next(transform_city_dataframes(tp, ttype=[0]))
+
+# %% Plotting
+get_simple_plots(h, state='NY')
+
+# %% Bokeh Plotting
+create_bokeh_choro(h, prop=5)
