@@ -19,6 +19,30 @@ This project tries to analyse:
 
 Requirements/Dependencies
 ---
+```
+import time
+import os
+import collections
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import string
+from bokeh.plotting import figure, show, output_file
+from bokeh.sampledata.us_counties import data as counties
+from bokeh.sampledata.us_states import data as states
+from bokeh.palettes import Reds as palette
+from bokeh.layouts import column, row, widgetbox
+from bokeh.models import CustomJS, Slider, Toggle
+from bokeh.models.callbacks import CustomJS
+from bokeh.io import show, output_file
+from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
+from datetime import datetime
+import plotly
+import plotly.graph_objs as go
+import plotly.tools as tls
+import matplotlib.lines as mlines
+```
 
 Code Organization
 ---
