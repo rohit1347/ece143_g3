@@ -450,29 +450,35 @@ get_simple_plots(h, state='NY')
 create_bokeh_choro(h, prop=5)
 
 # %%
-temp1 = combine_for_correlation(df1=get_fuel_usage(), df2=get_bus_miles())
-temp2 = combine_for_correlation(df1=temp1, df2=get_car_economy())
-temp2.loc[2007, 'Bus Miles'] = temp2.loc[2007, 'Bus Miles']*1e3
-temp2['Car Fuel Usage'] = temp2['Bus Miles'].div(
-    temp2['Real World Fuel Economy (mpg)'])
-# %%
-plotly.offline.init_notebook_mode(connected=True)
-fig, ax = plt.subplots()
-fig.set_figheight(6)
-fig.set_figwidth(12)
-ax.set_xlabel('Years')
-ax.set_ylabel('Fuel Consumption (gallons)')
 
-ax.plot(temp2['Car Fuel Usage'], label='Car Fuel Usage', color='#80D9FF')
-ax.plot(temp2['Diesel Usage'], label='Bus Fuel Usage', color='#BFFF00')
-patch2 = mlines.Line2D([], [], color='#BFFF00', marker='*',
-                       markersize=15, label='Bus Fuel Usage')
-patch1 = mlines.Line2D([], [], color='#80D9FF', marker='*',
-                       markersize=15, label='Car Fuel Usage')
-# ax.legend(loc="upper right",handles=[patch1,patch2])
-update = {'data': [{'fill': 'tozeroy'}]}  # this updates BOTH traces now
-plotly_fig = tls.mpl_to_plotly(fig)
-plotly_fig.update(update)
-plotly.offline.plot(plotly_fig, filename='mpl-multi-fill')
+
+def create_fuelsaved_plot():
+    """
+    Creates a plot of the fuel saved using PT miles and fuel data, and average mpg of personal vehicles over the years.
+    """
+    temp1 = combine_for_correlation(df1=get_fuel_usage(), df2=get_bus_miles())
+    temp2 = combine_for_correlation(df1=temp1, df2=get_car_economy())
+    temp2.loc[2007, 'Bus Miles'] = temp2.loc[2007, 'Bus Miles']*1e3
+    temp2['Car Fuel Usage'] = temp2['Bus Miles'].div(
+        temp2['Real World Fuel Economy (mpg)'])
+
+    plotly.offline.init_notebook_mode(connected=True)
+    fig, ax = plt.subplots()
+    fig.set_figheight(6)
+    fig.set_figwidth(12)
+    ax.set_xlabel('Years')
+    ax.set_ylabel('Fuel Consumption (gallons)')
+
+    ax.plot(temp2['Car Fuel Usage'], label='Car Fuel Usage', color='#80D9FF')
+    ax.plot(temp2['Diesel Usage'], label='Bus Fuel Usage', color='#BFFF00')
+    patch2 = mlines.Line2D([], [], color='#BFFF00', marker='*',
+                           markersize=15, label='Bus Fuel Usage')
+    patch1 = mlines.Line2D([], [], color='#80D9FF', marker='*',
+                           markersize=15, label='Car Fuel Usage')
+    # ax.legend(loc="upper right",handles=[patch1,patch2])
+    update = {'data': [{'fill': 'tozeroy'}]}  # this updates BOTH traces now
+    plotly_fig = tls.mpl_to_plotly(fig)
+    plotly_fig.update(update)
+    plotly.offline.plot(plotly_fig, filename='mpl-multi-fill')
 
 # %%
