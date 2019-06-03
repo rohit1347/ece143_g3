@@ -1,0 +1,87 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    
+      <meta charset="utf-8">
+      <title>Bokeh Plot</title>
+      
+      
+        
+          
+        <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-1.1.0.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-1.1.0.min.css" type="text/css" />
+        
+        
+          
+        <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-1.1.0.min.js"></script>
+        <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-1.1.0.min.js"></script>
+        <script type="text/javascript">
+            Bokeh.set_log_level("info");
+        </script>
+        
+      
+      
+    
+  </head>
+  
+  
+  <body>
+    
+      
+        
+          
+          
+            
+              <div class="bk-root" id="65a9f742-feb1-497c-9641-e1229b36cd7c" data-root-id="1990"></div>
+            
+          
+        
+      
+      
+        <script type="application/json" id="2070">
+          {"48f82d52-ee85-492a-85ac-7de30632b94c":{"roots":{"references":[{"attributes":{"align":"center","text":"Vehicles in Service (per 1000 persons)","text_font_size":{"value":"14pt"}},"id":"1945","type":"Title"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_multi":null,"active_scroll":"auto","active_tap":"auto","tools":[{"id":"1964","type":"PanTool"},{"id":"1965","type":"WheelZoomTool"},{"id":"1966","type":"ResetTool"},{"id":"1967","type":"HoverTool"},{"id":"1968","type":"SaveTool"}]},"id":"1969","type":"Toolbar"},{"attributes":{},"id":"1951","type":"CategoricalScale"},{"attributes":{"below":[{"id":"1955","type":"CategoricalAxis"}],"center":[{"id":"1958","type":"Grid"},{"id":"1963","type":"Grid"}],"left":[{"id":"1959","type":"LinearAxis"}],"outline_line_color":{"value":"black"},"plot_height":450,"plot_width":800,"renderers":[{"id":"1978","type":"GlyphRenderer"}],"title":{"id":"1945","type":"Title"},"toolbar":{"id":"1969","type":"Toolbar"},"toolbar_location":null,"x_range":{"id":"1947","type":"FactorRange"},"x_scale":{"id":"1951","type":"CategoricalScale"},"y_range":{"id":"1949","type":"DataRange1d"},"y_scale":{"id":"1953","type":"LinearScale"}},"id":"1944","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"1987","type":"UnionRenderers"},{"attributes":{"args":{"source_available":{"id":"1942","type":"ColumnDataSource"},"source_visible":{"id":"1943","type":"ColumnDataSource"}},"code":"\n        var selected_year = cb_obj.value;\n        // Get the data from the data sources\n        var data_visible = source_visible.data;\n        var data_available = source_available.data;\n        // Change y-axis data according to the selected value\n        data_visible.pvalue = data_available[selected_year];\n        // Update the plot\n        source_visible.change.emit();\n    "},"id":"1981","type":"CustomJS"},{"attributes":{},"id":"1953","type":"LinearScale"},{"attributes":{},"id":"1986","type":"BasicTickFormatter"},{"attributes":{"callback":null,"data":{"counties":["CA: San Diego","WA: Seattle","TX: Austin","NY: New York","IL: Chicago","MI: Detroit","GA: Atlanta","FL: Miami","AZ: Phoenix","PA: Philadelphia","WI: Milwaukee","CO: Denver","NV: Las Vegas","UT: Salt Lake City","MA: Boston","DC: Washington, DC","HI: Honolulu","MN: Minneapolis"],"pvalue":[1.4253435428432566,1.4936186608313162,0.5488541688194848,1.1078738199135376,0.896495674480591,0.23005720431308582,0.36544527749839995,0.3438649906560305,0.41347772259772714,0.8162515629135446,0.7343725818051606,0.7446267722041607,0.3857399473658983,1.087140201656058,0.5869831101623714,0.8332655468336926,1.1445566722641336,0.6087265599455411]},"selected":{"id":"1988","type":"Selection"},"selection_policy":{"id":"1987","type":"UnionRenderers"}},"id":"1943","type":"ColumnDataSource"},{"attributes":{},"id":"1984","type":"CategoricalTickFormatter"},{"attributes":{"callback":null,"data":{"2006":[1.4253435428432566,1.4936186608313162,0.5488541688194848,1.1078738199135376,0.896495674480591,0.23005720431308582,0.36544527749839995,0.3438649906560305,0.41347772259772714,0.8162515629135446,0.7343725818051606,0.7446267722041607,0.3857399473658983,1.087140201656058,0.5869831101623714,0.8332655468336926,1.1445566722641336,0.6087265599455411],"2007":[1.4413661400461784,1.3653097756253676,0.5224317326656392,1.1315256900039838,0.7591565814915531,0.21058688412623222,0.3885891926488068,0.3991598635253419,0.41072579099973894,0.803702622044154,0.7343725818051606,0.7486572283459966,0.37128420969340903,1.164873542499859,0.594174707202806,0.8632610729247163,1.1891136230092094,0.6539414626099967],"2008":[1.358791180711174,1.5282768079846472,0.5519934681644961,1.1629866098392565,0.7862392247190145,0.23697429174788906,0.45544939197220446,0.40347977546825686,0.47849210660019836,0.7358242600688139,0.7434763741415883,0.7617554432514866,0.3629150984093363,1.1750126739142681,0.6172374149531653,0.9085085614349047,1.285189548053279,0.6426377369438828],"2009":[1.3643663439782816,1.5467119926406743,0.5928043596496437,1.2272005944316082,0.7604806218271178,0.28257583113288826,0.4423059339855536,0.4026157930796739,0.494659704738379,0.736965072875122,0.7434763741415883,0.7587326041909649,0.3849791190673462,1.1626204021855462,0.6507155391069127,1.0602655875055924,1.3673414259895125,0.6593839971899775],"2010":[1.3665344630266012,1.5489242147993976,0.6155642799009761,1.197818342514023,0.7433884647680089,0.2892367301441803,0.45316357319191736,0.4008878283025079,0.47402021775346753,0.7552180777760539,0.7434763741415883,0.6932377578796598,0.4017173416354917,1.1874049456429898,0.6526994279456534,1.099158091674462,1.3910123060728339,0.6991563652744524],"2011":[1.3732730466669023,1.3721676162559044,0.4554710322850488,1.1273863779095699,0.7023529171228204,0.3631406848790468,0.33108776837764115,0.32042030670313987,0.3670317328141249,0.6436531816711105,0.7294708722031763,0.5820900740164173,0.3176015410302485,1.1769970516321777,0.6656272071473486,0.8764337431351474,1.228723212027032,0.6122472075416181],"2012":[1.339139318032483,1.3731482029278357,0.455875535866119,1.1276588382454753,0.7165254371176905,0.36126606482436147,0.3282087443047921,0.34557727293189877,0.38769793398609137,0.6511509337873511,0.6323740666880777,0.5863020137705158,0.34623339948706555,1.179934648266867,0.6424271212352778,0.9045581095193349,0.8436568098806294,0.6152650619225996],"2013":[1.2035186997975138,1.3996240430699816,0.455875535866119,1.1344703466431116,0.7388297308801088,0.35724902185003576,0.3335238656700519,0.3846367731291823,0.39265782226736334,0.6678766885081954,0.6323740666880777,0.614522010122976,0.3499449366944307,1.1192243178166215,0.6488848771077098,0.9337725676238399,0.8548723361567382,0.6428029831490556],"2014":[1.0678980815625445,1.4264267454361046,0.455875535866119,1.141336347107929,0.7611340246425272,0.35323197887571,0.33906045042553085,0.4236962733264659,0.39761771054863526,0.6851791933918273,0.6348637283679521,0.6427420064754362,0.3541866935028481,1.058513987366376,0.6555818091235653,0.9632050440724083,0.8673340320190813,0.6707181361731344],"2015":[1.0813077606689236,1.442442994410983,0.4653813700212688,1.1555587766421933,0.7517244007115069,0.35349978174066504,0.34459703518100976,0.39059500197283575,0.3967910625017566,0.6822954425778887,0.642332713407575,0.6381088727459278,0.3753954775449348,1.0810355615656606,0.6754334290277083,1.0240321620661161,0.9956894994012155,0.6831667854946829],"2016":[1.0267547479407,1.5022587813987938,0.4542575215418382,1.1544689352985715,0.761017856445848,0.36206947341922663,0.36342142334963823,0.4025114596601426,0.40064875338719036,0.6863326937174028,0.642332713407575,0.6557990197131416,0.341461423077596,1.0722227716615929,0.678781895035636,1.038857409462432,0.8710459100137533,0.6876935670661551],"2017":[0.9722017352124763,1.5620745683866049,0.44313367306240764,1.1533790939549498,0.7704274803768683,0.3706391650977882,0.3824672749084858,0.4150899427745221,0.4047819936215837,0.6909466950197046,0.6448223750874493,0.6734891666803555,0.30805758821130946,1.0634099817575249,0.6821303610435637,1.053682656858748,0.0,0.6922203486376274]},"selected":{"id":"1999","type":"Selection"},"selection_policy":{"id":"1998","type":"UnionRenderers"}},"id":"1942","type":"ColumnDataSource"},{"attributes":{"callback":null,"factors":["CA: San Diego","WA: Seattle","TX: Austin","NY: New York","IL: Chicago","MI: Detroit","GA: Atlanta","FL: Miami","AZ: Phoenix","PA: Philadelphia","WI: Milwaukee","CO: Denver","NV: Las Vegas","UT: Salt Lake City","MA: Boston","DC: Washington, DC","HI: Honolulu","MN: Minneapolis"],"range_padding":0.1},"id":"1947","type":"FactorRange"},{"attributes":{"callback":null,"tooltips":[["County","@counties"],["Vehicles in Service (per 1000 persons)","$y"]]},"id":"1967","type":"HoverTool"},{"attributes":{},"id":"1966","type":"ResetTool"},{"attributes":{"children":[{"id":"1944","subtype":"Figure","type":"Plot"},{"id":"1989","type":"WidgetBox"}]},"id":"1990","type":"Column"},{"attributes":{"children":[{"id":"1980","type":"Slider"}]},"id":"1989","type":"WidgetBox"},{"attributes":{"fill_alpha":{"value":0.7},"fill_color":{"value":"#3f8fe0"},"line_alpha":{"value":0.7},"line_color":{"value":"#3f8fe0"},"top":{"field":"pvalue"},"width":{"value":0.4},"x":{"field":"counties"}},"id":"1976","type":"VBar"},{"attributes":{},"id":"1988","type":"Selection"},{"attributes":{"formatter":{"id":"1984","type":"CategoricalTickFormatter"},"major_label_orientation":1.57,"major_label_text_font_size":{"value":"12pt"},"ticker":{"id":"1956","type":"CategoricalTicker"}},"id":"1955","type":"CategoricalAxis"},{"attributes":{"source":{"id":"1943","type":"ColumnDataSource"}},"id":"1979","type":"CDSView"},{"attributes":{"callback":null},"id":"1949","type":"DataRange1d"},{"attributes":{},"id":"1956","type":"CategoricalTicker"},{"attributes":{"dimension":1,"ticker":{"id":"1960","type":"BasicTicker"}},"id":"1963","type":"Grid"},{"attributes":{},"id":"1965","type":"WheelZoomTool"},{"attributes":{"axis_label_text_font_size":{"value":"12pt"},"formatter":{"id":"1986","type":"BasicTickFormatter"},"major_label_text_font_size":{"value":"12pt"},"ticker":{"id":"1960","type":"BasicTicker"}},"id":"1959","type":"LinearAxis"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"top":{"field":"pvalue"},"width":{"value":0.4},"x":{"field":"counties"}},"id":"1977","type":"VBar"},{"attributes":{},"id":"1968","type":"SaveTool"},{"attributes":{},"id":"1960","type":"BasicTicker"},{"attributes":{"ticker":{"id":"1956","type":"CategoricalTicker"}},"id":"1958","type":"Grid"},{"attributes":{"data_source":{"id":"1943","type":"ColumnDataSource"},"glyph":{"id":"1976","type":"VBar"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"1977","type":"VBar"},"selection_glyph":null,"view":{"id":"1979","type":"CDSView"}},"id":"1978","type":"GlyphRenderer"},{"attributes":{},"id":"1999","type":"Selection"},{"attributes":{"align":"center","bar_color":"#3f8fe0","callback":{"id":"1981","type":"CustomJS"},"end":2017,"start":2006,"title":"Year","value":2006},"id":"1980","type":"Slider"},{"attributes":{},"id":"1998","type":"UnionRenderers"},{"attributes":{},"id":"1964","type":"PanTool"}],"root_ids":["1990"]},"title":"Bokeh Application","version":"1.1.0"}}
+        </script>
+        <script type="text/javascript">
+          (function() {
+            var fn = function() {
+              Bokeh.safely(function() {
+                (function(root) {
+                  function embed_document(root) {
+                    
+                  var docs_json = document.getElementById('2070').textContent;
+                  var render_items = [{"docid":"48f82d52-ee85-492a-85ac-7de30632b94c","roots":{"1990":"65a9f742-feb1-497c-9641-e1229b36cd7c"}}];
+                  root.Bokeh.embed.embed_items(docs_json, render_items);
+                
+                  }
+                  if (root.Bokeh !== undefined) {
+                    embed_document(root);
+                  } else {
+                    var attempts = 0;
+                    var timer = setInterval(function(root) {
+                      if (root.Bokeh !== undefined) {
+                        embed_document(root);
+                        clearInterval(timer);
+                      }
+                      attempts++;
+                      if (attempts > 100) {
+                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+                        clearInterval(timer);
+                      }
+                    }, 10, root)
+                  }
+                })(window);
+              });
+            };
+            if (document.readyState != "loading") fn();
+            else document.addEventListener("DOMContentLoaded", fn);
+          })();
+        </script>
+    
+  </body>
+  
+</html>

@@ -1,4 +1,5 @@
 # %%
+# %%
 from ProjectWorkspace import *
 
 import time
@@ -431,6 +432,8 @@ for excel in datasets:
 print(dataset_index)
 
 # %%
+
+
 def graph_year_property(h, p_no=0):
     '''
     Creates bar graphs for particular year and property
@@ -444,10 +447,10 @@ def graph_year_property(h, p_no=0):
     from bokeh.models.callbacks import CustomJS
     output_file("bars.html")
     xlabels = []
-    
+
     for key, value in cities.items():
         xlabels.append(key + ': ' + value[0])
-    
+
     yr_ind = 0
 
     p_values = []
@@ -457,43 +460,74 @@ def graph_year_property(h, p_no=0):
         for state, city_list in h.items():
             city_p = [d.get(str(col_index_names1000[p_no])) for d in city_list]
             a = array(city_p)
+            print(a)
+            print("faltu")
+            if p_no == 0:
+                a = a / 1000000
+            if p_no == 5:
+                a = a / 1000
             col = 0
             for row in a:
-                if col == 2:
+                if col == 1:
                     break
                 p_value[i] = row[yr_ind]
                 col = col + 1
             i = i + 1
         p_values.append(p_value)
-    print(p_values)
-    # cs = ['C1']
-    # colors = ["#e84d60", "#718dbf", "#c9d9d3"]
-    # alldat = {}
-    # for yx, yy in enumerate(range(12)):
-    #     alldat[str(yy)]=p_values[yx]
-    # data = dict(xlabels= xlabels,
-    #         C1= [row[0] for row in p_values[0]],**alldat)
-    # source = ColumnDataSource(data)
-    p = figure(x_range=xlabels, plot_height=450, plot_width=800, title='Year', toolbar_location=None, tools="")
-    p.vbar(x=xlabels, top=p_values[0], width=0.4)
-    #p.y_range.start = 0
+    #print(p_values)
+    alldat = {}
+    syear = h['CA'][0].index[0]
+    nyears = len(h['CA'][0].index)
+    for ix, yy in enumerate(range(syear, syear + nyears)):
+        alldat[str(yy)] = p_values[ix]
+    source_available = ColumnDataSource(data=alldat)
+    source_visible = ColumnDataSource(
+        data=dict(counties=xlabels, pvalue=p_values[0]))
+    TOOLS = "pan,wheel_zoom,reset,hover,save"
+    p = figure(x_range=xlabels, plot_height=450, plot_width=800, title=col_index_names1000[p_no], toolbar_location=None, tools=TOOLS)
+    p.vbar(x='counties', top='pvalue', source=source_visible,
+           width=0.4, alpha=0.7, color='#643fe0')
     p.x_range.range_padding = 0.1
     p.title.align = 'center'
-    p.yaxis.axis_label = col_index_names1000[p_no]
+    p.title.text_font_size = '14pt'
+    p.yaxis.axis_label = 'In thousands'
     p.yaxis.axis_label_text_font_size = '12pt'
+    p.yaxis.major_label_text_font_size = '12pt'
     p.xaxis.major_label_orientation = 3.14/2
     p.xaxis.major_label_text_font_size = '12pt'
     p.axis.minor_tick_line_color = 'black'
     p.outline_line_color = 'black'
-    show(p)
-    slider = Slider(start=0, end=9, value=0, step=1, title="Start Year")
+    # show(p)
+    slider = Slider(start=syear, end=syear+nyears-1,
+                    value=syear, step=1, title="Year",bar_color='#643fe0',align="center")
 
-    def update(source=source, slider=slider, window=None):
-        """ Update the map: change the bike density measure according to slider
-            will be translated to JavaScript and Called in Browser """
-        source.data = data
-        v = cb_obj.getv('value')
-        data['C1'] = [x for x in data[v][0]]
-        source.trigger('change')
-    slider.js_on_change('value', CustomJS.from_py_func(update))
     #show(column(p, widgetbox(slider),))
+    slider.callback = CustomJS(
+        args=dict(source_visible=source_visible,
+                  source_available=source_available), code="""
+        var selected_year = cb_obj.value;
+        // Get the data from the data sources
+        var data_visible = source_visible.data;
+        var data_available = source_available.data;
+        // Change y-axis data according to the selected value
+        data_visible.pvalue = data_available[selected_year];
+        // Update the plot
+        source_visible.change.emit();
+    """)
+    hover = p.select_one(HoverTool)
+    # hover.point_policy = "follow_mouse"
+    property = h['CA'][0].columns[p_no]
+    hover.tooltips = [("County", "@counties"), (property,
+                                                "$y")]
+    show(column(p, widgetbox(slider),))
+
+    # def update(source=source_visible, slider=slider, window=None):
+    #     """ Update the map: change the bike density measure according to slider
+    #         will be translated to JavaScript and Called in Browser """
+    #     data = source_available.data
+    #     v = cb_obj.getv('value')
+    #     data['pvalue'] = [x for x in data[v]]
+    #     source.trigger('change')
+    #     # source.change.emit()
+    # slider.js_on_change('value', CustomJS.from_py_func(update))
+    # show(column(p, widgetbox(slider),))
