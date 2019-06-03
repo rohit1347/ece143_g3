@@ -1,4 +1,6 @@
 # %%
+# Author - Rohit Kumar
+
 from ProjectWorkspace import *
 
 import time
@@ -359,7 +361,7 @@ def combine_for_correlation(df1=get_us_ridership(), df2=get_sales_data()):
     df1.index.astype(int)
     df2.index.astype(int)
     temp = pd.concat([df1, df2], axis=1)
-    temp.index.name='Year'
+    temp.index.name = 'Year'
     return temp.dropna()
 
 
@@ -398,21 +400,24 @@ def get_mv_deaths(fname='deaths-and-population-ra.csv'):
     df2[df2.columns[0]] = data
     return df2
 
-#%%
+# %%
+
+
 def get_fuel_usage(fname='2019-APTA-Fact-Book-Appendix-A.xlsx'):
     fc = pd.read_excel(fname, sheet_name='59', index_col=0)
-    fc = fc.iloc[3:,0:1].dropna()
+    fc = fc.iloc[3:, 0:1].dropna()
     fc.index.name = 'Year'
     fc.columns = ['Diesel Usage']
-    fc['Diesel Usage']=fc['Diesel Usage'].astype(str)
+    fc['Diesel Usage'] = fc['Diesel Usage'].astype(str)
     fc['Diesel Usage'] = fc['Diesel Usage'].str.extract('(\d+)', expand=False)
     fc['Diesel Usage'] = fc['Diesel Usage'].astype(int)
     fc['Diesel Usage'] = fc['Diesel Usage'] * 1e6
     return fc
 
+
 def get_bus_miles(fname='2019-APTA-Fact-Book-Appendix-A.xlsx'):
     fc = pd.read_excel(fname,
-                    sheet_name='3', index_col=0)
+                       sheet_name='3', index_col=0)
     fc = fc.iloc[5:-9, [0, 3]]
     fc.dropna()
     mc = pd.DataFrame(index=fc.index, columns=['Bus Miles'])
@@ -423,6 +428,8 @@ def get_bus_miles(fname='2019-APTA-Fact-Book-Appendix-A.xlsx'):
     mc['Bus Miles'] = mc['Bus Miles'].astype(int)
     mc['Bus Miles'] = mc['Bus Miles'] * 1e6
     return mc
+
+
 # %%
 start = time.time()
 tp = create_city_dataframes()
@@ -443,12 +450,12 @@ get_simple_plots(h, state='NY')
 create_bokeh_choro(h, prop=5)
 
 # %%
-temp1=combine_for_correlation(df1=get_fuel_usage(), df2=get_bus_miles())
+temp1 = combine_for_correlation(df1=get_fuel_usage(), df2=get_bus_miles())
 temp2 = combine_for_correlation(df1=temp1, df2=get_car_economy())
 temp2.loc[2007, 'Bus Miles'] = temp2.loc[2007, 'Bus Miles']*1e3
 temp2['Car Fuel Usage'] = temp2['Bus Miles'].div(
-temp2['Real World Fuel Economy (mpg)'])
-#%%
+    temp2['Real World Fuel Economy (mpg)'])
+# %%
 plotly.offline.init_notebook_mode(connected=True)
 fig, ax = plt.subplots()
 fig.set_figheight(6)
@@ -456,7 +463,7 @@ fig.set_figwidth(12)
 ax.set_xlabel('Years')
 ax.set_ylabel('Fuel Consumption (gallons)')
 
-ax.plot(temp2['Car Fuel Usage'], label='Car Fuel Usage',color='#80D9FF')
+ax.plot(temp2['Car Fuel Usage'], label='Car Fuel Usage', color='#80D9FF')
 ax.plot(temp2['Diesel Usage'], label='Bus Fuel Usage', color='#BFFF00')
 patch2 = mlines.Line2D([], [], color='#BFFF00', marker='*',
                        markersize=15, label='Bus Fuel Usage')
