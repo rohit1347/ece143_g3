@@ -14,7 +14,7 @@ This project tries to analyse:
 * Annual ridership trends of public transportation.
 * Fuel savings due to usage of public transport.
 * Correlation between public transport ridership and road accidents.
-* Correlation between public ridership and car sales.
+* Correlation between public transport ridership and car sales.
 * US county level public transport vehicle availability.
 
 Requirements/Dependencies
