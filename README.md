@@ -6,7 +6,6 @@
 Spring 2019 @ UCSD
 
 ## Description
----
 Public transportation is an economical and eco-friendly way to travel. More cities should be investing in public transport infrastructure.
 
 This project tries to analyse:
@@ -18,7 +17,6 @@ This project tries to analyse:
 * US county level public transport vehicle availability.
 
 ## Requirements/Dependencies
----
 ```
 import time
 import os
@@ -45,21 +43,28 @@ import matplotlib.lines as mlines
 ```
 
 ##Code Organization
----
 
 ## Plots
----
 ### US Annual Trends
 * [Ridership](http://acsweb.ucsd.edu/~rokumar/ridership_from_1922_rajat.html)
 * [Revenue Miles](http://acsweb.ucsd.edu/~rokumar/miles_rajat_final.html)
 * [Employees](http://acsweb.ucsd.edu/~rokumar/employee_compensation_us_rajat.html)
 * [Fuel Savings](http://acsweb.ucsd.edu/~rokumar/employee_compensation_us_rajat.html)
-#### Correlation
+#### Correlations
 * [Ridership vs Motor Vehicle Accident Deaths](http://acsweb.ucsd.edu/~rokumar/corrTvD.jpg)
 * [Ridership vs Personal Motor Vehicle Sales](http://acsweb.ucsd.edu/~rokumar/corrTvT.jpg)
+### US County Trends
+* [Vehicles in Service Overview](http://acsweb.ucsd.edu/~rokumar/VehiclesinService(per1000persons).html)
+* [Vehicles in Service](http://acsweb.ucsd.edu/~rokumar/vehicles_in_service.html)
+* [Unlinked Trips](http://acsweb.ucsd.edu/~rokumar/unlinked_trips.html)
+#### Correlations
+* [Ridership vs Traffic Accidents](http://acsweb.ucsd.edu/~rokumar/corrAvT.jpg)
+* [Ridership vs Transportation Electricity Consumption](http://acsweb.ucsd.edu/~rokumar/corrAvE.jpg)
+### New York vs Hong Kong
+* [NY vs HK Ridership](http://acsweb.ucsd.edu/~rokumar/ny_vs_hk_ridership.html)
+* [NY vs HK Transportation Accidents](http://acsweb.ucsd.edu/~rokumar/nyvshk_traffic.html)
 
 ## Project by:
----
 i) Himanshu Gupta
 
 ii) Mingkun Yin
