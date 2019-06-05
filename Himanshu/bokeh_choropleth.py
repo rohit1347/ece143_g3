@@ -429,8 +429,6 @@ for excel in datasets:
 print(dataset_index)
 
 # %%
-
-
 def graph_year_property(h, p_no=0):
     '''
     Creates bar graphs with slider for years from 2006 to 2017 for a particular parameter
@@ -456,7 +454,7 @@ def graph_year_property(h, p_no=0):
     xlabels = []
 
     for key, value in cities.items():
-        xlabels.append(key + ': ' + value[0])
+        xlabels.append(key + ': ' + value[0]) #labels used for the x-axis in the form "State: City"
 
     yr_ind = 0
 
@@ -468,17 +466,17 @@ def graph_year_property(h, p_no=0):
             city_p = [d.get(str(col_index_names1000[p_no])) for d in city_list]
             a = array(city_p)
             if p_no == 0:
-                a = a / 1000000
+                a = a / 1000000 #To get "Population" in millions
             if p_no == 5:
-                a = a / 1000
+                a = a / 1000 #To get "Unlinked passenger trips" in thousands
             col = 0
             for row in a:
-                if col == 1:
+                if col == 1: #To get values of only the 1st city for each state
                     break
                 p_value[i] = row[yr_ind]
                 col = col + 1
             i = i + 1
-        p_values.append(p_value)
+        p_values.append(p_value) #List containing values corresponding to 1st city for each state
     
     alldat = {}
     syear = h['CA'][0].index[0]
@@ -495,7 +493,10 @@ def graph_year_property(h, p_no=0):
     p.x_range.range_padding = 0.1
     p.title.align = 'center'
     p.title.text_font_size = '14pt'
-    p.yaxis.axis_label = 'In thousands'
+    if p_no == 0:
+        p.yaxis.axis_label = 'In millions'
+    if p_no == 5:
+        p.yaxis.axis_label = 'In thousands'
     p.yaxis.axis_label_text_font_size = '12pt'
     p.yaxis.major_label_text_font_size = '12pt'
     p.xaxis.major_label_orientation = 3.14/4
