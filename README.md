@@ -42,7 +42,7 @@ import plotly.tools as tls
 import matplotlib.lines as mlines
 ```
 
-##Code Organization
+## Code Organization
 
 ## Plots
 ### US Annual Trends
