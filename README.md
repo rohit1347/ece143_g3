@@ -76,5 +76,5 @@ iv) Rohit Kumar
 
 [Project Presentation](https://drive.google.com/a/eng.ucsd.edu/file/d/1Bk8idTlstwerVcrGewY6Z3Pjgp48-w7_/view?usp=sharing)
 ---
-[Project Proposal](https://drive.google.com/open?id=1tMI7DCHLvUNBs6RAQkT9LqQ2Diw3NZZU)
+[Project Proposal](https://drive.google.com/a/eng.ucsd.edu/file/d/1tMI7DCHLvUNBs6RAQkT9LqQ2Diw3NZZU/view?usp=sharing)
 ---
