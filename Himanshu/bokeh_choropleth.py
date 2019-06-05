@@ -1,7 +1,5 @@
 # %%
-# %%
 from ProjectWorkspace import *
-
 import time
 import os
 import collections
@@ -23,9 +21,8 @@ from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
 from datetime import datetime
 %matplotlib qt5
 plt.style.use('fivethirtyeight')
+
 # %%
-
-
 def get_xls(pflag=0):
     """Returns list of Excel files found and for what years.
 
@@ -436,8 +433,18 @@ print(dataset_index)
 
 def graph_year_property(h, p_no=0):
     '''
-    Creates bar graphs for particular year and property
+    Creates bar graphs with slider for years from 2006 to 2017 for a particular parameter
+    
+    Arguments:
+        h{dict} -- Dictionary with filled dataframes
+
+    Keyword Arguments:
+        p_no{int} -- Parameter to be plotted
     '''
+    assert isinstance(p_no, int)
+    assert p_no >= 0 and p_no <= 6
+    assert isinstance(h, dict)
+    
     from bokeh.core.properties import value
     from bokeh.plotting import figure
     from bokeh.io import show, output_file
@@ -460,8 +467,6 @@ def graph_year_property(h, p_no=0):
         for state, city_list in h.items():
             city_p = [d.get(str(col_index_names1000[p_no])) for d in city_list]
             a = array(city_p)
-            print(a)
-            print("faltu")
             if p_no == 0:
                 a = a / 1000000
             if p_no == 5:
@@ -474,7 +479,7 @@ def graph_year_property(h, p_no=0):
                 col = col + 1
             i = i + 1
         p_values.append(p_value)
-    #print(p_values)
+    
     alldat = {}
     syear = h['CA'][0].index[0]
     nyears = len(h['CA'][0].index)
@@ -493,15 +498,12 @@ def graph_year_property(h, p_no=0):
     p.yaxis.axis_label = 'In thousands'
     p.yaxis.axis_label_text_font_size = '12pt'
     p.yaxis.major_label_text_font_size = '12pt'
-    p.xaxis.major_label_orientation = 3.14/2
+    p.xaxis.major_label_orientation = 3.14/4
     p.xaxis.major_label_text_font_size = '12pt'
     p.axis.minor_tick_line_color = 'black'
     p.outline_line_color = 'black'
-    # show(p)
     slider = Slider(start=syear, end=syear+nyears-1,
                     value=syear, step=1, title="Year",bar_color='#643fe0',align="center")
-
-    #show(column(p, widgetbox(slider),))
     slider.callback = CustomJS(
         args=dict(source_visible=source_visible,
                   source_available=source_available), code="""
@@ -515,19 +517,9 @@ def graph_year_property(h, p_no=0):
         source_visible.change.emit();
     """)
     hover = p.select_one(HoverTool)
-    # hover.point_policy = "follow_mouse"
     property = h['CA'][0].columns[p_no]
     hover.tooltips = [("County", "@counties"), (property,
                                                 "$y")]
     show(column(p, widgetbox(slider),))
 
-    # def update(source=source_visible, slider=slider, window=None):
-    #     """ Update the map: change the bike density measure according to slider
-    #         will be translated to JavaScript and Called in Browser """
-    #     data = source_available.data
-    #     v = cb_obj.getv('value')
-    #     data['pvalue'] = [x for x in data[v]]
-    #     source.trigger('change')
-    #     # source.change.emit()
-    # slider.js_on_change('value', CustomJS.from_py_func(update))
-    # show(column(p, widgetbox(slider),))
+#%%
