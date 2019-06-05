@@ -5,7 +5,7 @@
 
 Spring 2019 @ UCSD
 
-##Description
+## Description
 ---
 Public transportation is an economical and eco-friendly way to travel. More cities should be investing in public transport infrastructure.
 
@@ -17,7 +17,7 @@ This project tries to analyse:
 * Correlation between public transport ridership and car sales.
 * US county level public transport vehicle availability.
 
-##Requirements/Dependencies
+## Requirements/Dependencies
 ---
 ```
 import time
@@ -47,18 +47,18 @@ import matplotlib.lines as mlines
 ##Code Organization
 ---
 
-##Plots
+## Plots
 ---
-###US Annual Trends
+### US Annual Trends
 * [Ridership](http://acsweb.ucsd.edu/~rokumar/ridership_from_1922_rajat.html)
 * [Revenue Miles](http://acsweb.ucsd.edu/~rokumar/miles_rajat_final.html)
 * [Employees](http://acsweb.ucsd.edu/~rokumar/employee_compensation_us_rajat.html)
 * [Fuel Savings](http://acsweb.ucsd.edu/~rokumar/employee_compensation_us_rajat.html)
-####Correlation
+#### Correlation
 * [Ridership vs Motor Vehicle Accident Deaths](http://acsweb.ucsd.edu/~rokumar/corrTvD.jpg)
 * [Ridership vs Personal Motor Vehicle Sales](http://acsweb.ucsd.edu/~rokumar/corrTvT.jpg)
 
-##Project by:
+## Project by:
 ---
 i) Himanshu Gupta
 
