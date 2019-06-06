@@ -18,7 +18,6 @@ This project tries to analyse:
 
 ## Requirements/Dependencies
 ```
-import time
 import os
 import collections
 import numpy as np
@@ -33,17 +32,16 @@ from bokeh.palettes import Reds as palette
 from bokeh.layouts import column, row, widgetbox
 from bokeh.models import CustomJS, Slider, Toggle
 from bokeh.models.callbacks import CustomJS
-from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
 from datetime import datetime
 import plotly
-import plotly.graph_objs as go
 import plotly.tools as tls
 import matplotlib.lines as mlines
 ```
 
 ## Code Organization
-1. `import_xls.py` in the folder `Master` contains a class to obtain data from APTA sources, and visualization for the data.
+1. `import_xls.py` in the folder `Master` contains `apta_utils()` class to obtain data from APTA sources, and visualization *(correlations, choropleths, fuel saved)* for the data.
+2. `graph_county_properties.py` gives a bar graph of all counties for the required property.
 
 ## Plots
 ### US Annual Trends
@@ -66,13 +64,13 @@ import matplotlib.lines as mlines
 * [NY vs HK Transportation Accidents](http://acsweb.ucsd.edu/~rokumar/nyvshk_traffic.html)
 
 ## Project by:
-i) Himanshu Gupta
+* Himanshu Gupta
 
-ii) Mingkun Yin
+* Mingkun Yin
 
-iii) Rajat Sethi
+* Rajat Sethi
 
-iv) Rohit Kumar
++ Rohit Kumar
 
 [Project Presentation](https://drive.google.com/a/eng.ucsd.edu/file/d/1Bk8idTlstwerVcrGewY6Z3Pjgp48-w7_/view?usp=sharing)
 ---
