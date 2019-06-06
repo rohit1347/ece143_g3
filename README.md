@@ -1,4 +1,4 @@
-<div style="text-align: center"> ECE143 Group 3 Project </div> 
+ECE143 Group 3 Project - Please use branch **final**
 <img src="w_BusTrolley_SantaFe.jpg" height="250" width="1550" alt="SDMTS">
 
 # Effectiveness of Public Transportation
