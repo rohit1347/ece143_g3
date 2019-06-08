@@ -16,7 +16,12 @@ This project tries to analyse:
 * Correlation between public transport ridership and car sales.
 * US county level public transport vehicle availability.
 
-## Requirements/Dependencies
+
+For the choropleth plots, we are using a [native bokeh choropleth implementation](http://bokeh.pydata.org/en/0.11.1/docs/gallery/choropleth.html), for which bokeh sampledata needs to be installed.
+Please install it by typing in terminal using: `bokeh sampledata`
+## Code Organization 
+
+### Requirements/Dependencies
 
 1. bokeh
 2. bokeh sampledata
@@ -25,9 +30,6 @@ This project tries to analyse:
 5. plotly
 6. numpy
 
-For the choropleth plots, we are using a [native bokeh choropleth implementation](http://bokeh.pydata.org/en/0.11.1/docs/gallery/choropleth.html), for which bokeh sampledata needs to be installed.
-Please install it by typing in terminal using: `bokeh sampledata`
-## Code Organization 
 ### Instructions
 1. Please use branch **final**. Select branch using `git checkout final`.
 2. `
@@ -38,7 +40,16 @@ The folder `Master` contains all scripts and some dataset files.
 4. Instead of using the provided Jupyter notebook to view plots, we recommend using the links provided in the section below to view all the plots. Mitigates the need to compile code to view plots.
 ### Running the Code
 1. `import_xls.py` contains `apta_utils()` class to obtain data from APTA sources, and visualization *(correlations, choropleths, fuel saved)* for the data.
-2. `graph_county_properties.py` gives a bar graph of all counties for the required property.
+2. `graph_county_properties.py` - Gives a bar graph of all counties for the required property.
+3. `unlinked_trips_us.py` - Returns plot for the number of unlinked trips in public transport in US over the years.
+4. `ridership_US_1922.py` - Returns the plot of changing transit ridership for major modes of public transport
+5. `read_pdf_HK_env.py` - Returns the electricity consumption and ridership data in HK in form of a dataframe from which correlation plot can be obtained.
+6. `plot_for_changing_ridership_trend_us.py` - Returns the public transport ridership change in US over the years plot.
+7. `passenger_miles.py` - Returns the US Passenger miles over the years plot.
+8. `nyvshk_traffic.py` - Returns the NY vs HK Traffic Accidents plot.
+9. `hk_correlation.py` - Returns the HK Ridership vs Traffic Accidents correlation plot.
+10. `employee_compensation.py` - Return the public transportation employee in US compensation plots.
+11. `Group-3_Project_Effectiveness of Public Transportation.ipynb` - Contains matplotlib plots
 
 ## Plots
 ### US Annual Trends
