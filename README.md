@@ -31,7 +31,7 @@ Please install it by typing in terminal using: `bokeh sampledata`
 6. numpy
 
 ### Instructions
-1. Please use branch **final**. Select branch using `git checkout final`.
+1. **Please use branch final**. Select branch using `git checkout final`.
 2. `
 Root > Master
 `
