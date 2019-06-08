@@ -1,4 +1,4 @@
-<div style="text-align: center"> ECE143 Group 3 Project </div> 
+ECE143 Group 3 Project
 <img src="w_BusTrolley_SantaFe.jpg" height="250" width="1550" alt="SDMTS">
 
 # Effectiveness of Public Transportation
@@ -17,30 +17,27 @@ This project tries to analyse:
 * US county level public transport vehicle availability.
 
 ## Requirements/Dependencies
-```
-import os
-import collections
-import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-import string
-from bokeh.plotting import figure, show, output_file
-from bokeh.sampledata.us_counties import data as counties
-from bokeh.sampledata.us_states import data as states
-from bokeh.palettes import Reds as palette
-from bokeh.layouts import column, row, widgetbox
-from bokeh.models import CustomJS, Slider, Toggle
-from bokeh.models.callbacks import CustomJS
-from bokeh.models import ColumnDataSource, HoverTool, LogColorMapper
-from datetime import datetime
-import plotly
-import plotly.tools as tls
-import matplotlib.lines as mlines
-```
 
-## Code Organization
-1. `import_xls.py` in the folder `Master` contains `apta_utils()` class to obtain data from APTA sources, and visualization *(correlations, choropleths, fuel saved)* for the data.
+1. bokeh
+2. bokeh sampledata
+3. matplotlib 
+4. seaborn
+5. plotly
+6. numpy
+
+For the choropleth plots, we are using a [native bokeh choropleth implementation](http://bokeh.pydata.org/en/0.11.1/docs/gallery/choropleth.html), for which bokeh sampledata needs to be installed.
+Please install it by typing in terminal using: `bokeh sampledata`
+## Code Organization 
+### Instructions
+1. Please use branch **final**. Select branch using `git checkout final`.
+2. `
+Root > Master
+`
+The folder `Master` contains all scripts and some dataset files.
+3. The repo contains dataset files totalling **9.73 MB**.
+4. Instead of using the provided Jupyter notebook to view plots, we recommend using the links provided in the section below to view all the plots. Mitigates the need to compile code to view plots.
+### Running the Code
+1. `import_xls.py` contains `apta_utils()` class to obtain data from APTA sources, and visualization *(correlations, choropleths, fuel saved)* for the data.
 2. `graph_county_properties.py` gives a bar graph of all counties for the required property.
 
 ## Plots
