@@ -18,7 +18,7 @@ This project tries to analyse:
 
 
 For the choropleth plots, we are using a [native bokeh choropleth implementation](http://bokeh.pydata.org/en/0.11.1/docs/gallery/choropleth.html), for which bokeh sampledata needs to be installed.
-Please install it by typing in terminal using: `bokeh sampledata`
+Please install it by typing in terminal: `bokeh sampledata`
 ## Code Organization 
 
 ### Requirements/Dependencies
