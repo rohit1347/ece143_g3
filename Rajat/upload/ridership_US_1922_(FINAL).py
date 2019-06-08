@@ -14,7 +14,7 @@ def ridership_trend_us(file2):
         Returns the plot of Changing transit ridership for major modes of public transport
     """
 
-    assert isinstance(type(file2),str)
+    assert isinstance(file2,str)
     df = pd.read_excel(file2, sheet_name= '1', skiprows = 4)
     df = df.iloc[10:106]  # For years 1922- 2017
     df = df.rename(columns = {'Unnamed: 4':'Bus','Unnamed: 17':'Surface Rail', 'Ferryboat':'FerryBoat * (100)'})

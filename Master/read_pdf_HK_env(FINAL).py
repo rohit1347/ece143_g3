@@ -21,7 +21,7 @@ def ridership_elec_consumption_corr_hk_plot(table):
         Returns the electricity consumption and ridership data in HK in form of a dataframe which 
         from which correlation plot can be obtained.
     """
-    assert isinstance(type(table),pd.Series)
+    assert isinstance(table,pd.Series)
     # a = list(table.columns[1:11].values)
     df = pd.DataFrame({'Years':table.index[1:], 'Electricity consumption (in kWh)':table.values[1:]})
 
@@ -53,7 +53,7 @@ def create_correlation_plot(df):
     Arguments:
         df {pd Dataframe} -- Dataframe with index as years and column1=data1 and column2=data2.
     """
-    assert isinstance(type(df),pd.DataFrame)
+    assert isinstance(df,pd.DataFrame)
     xdata = df.iloc[:, 0]
     ydata = df.iloc[:, 1]
     plt.clf

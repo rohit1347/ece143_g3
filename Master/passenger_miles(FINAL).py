@@ -16,7 +16,7 @@ def plot_passenger_miles_us(file2):
         Returns the US Passenger miles over the years plot
     """
 
-    assert isinstance(type(file2),str)
+    assert isinstance(file2,str)
     df = pd.read_excel(file2, sheet_name= '3', skiprows = 4)
     df = df.iloc[1:42]  # For years 1977- 2017
     df = df.rename(columns = {'Unnamed: 4':'Bus','Trolleybus (a)':'TrolleyBus','Unnamed: 13':'Region_Railroad','Unnamed: 17':'Surface Rail', 'Ferryboat':'FerryBoat'})

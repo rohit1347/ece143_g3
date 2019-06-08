@@ -16,7 +16,7 @@ def plot_unlinked_trips_us(file2):
         Returns the number of unlinked trips in public transport in US over the years plot
     """
 
-    assert isinstance(type(file2),str)
+    assert isinstance(file2,str)
     df = pd.read_excel(file2, sheet_name= '1', skiprows = 4)
     df = df.iloc[10:106]  # For years 1922- 2017
     df = df.rename(columns = {'Unnamed: 4':'Bus','Trolleybus (a)':'TrolleyBus','Unnamed: 13':'Region_Railroad','Unnamed: 17':'Surface Rail', 'Ferryboat':'FerryBoat'})

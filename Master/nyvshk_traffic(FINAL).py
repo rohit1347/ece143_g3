@@ -24,8 +24,8 @@ def plot_nyvshk_accidents(f,file1):
         Returns the NY vs HK Traffic Accidents plot
     """
 
-    assert isinstance(type(file1),str)
-    assert isinstance(type(f),str)
+    assert isinstance(file1,str)
+    assert isinstance(f,str)
     import plotly
     import plotly.graph_objs as go
 
@@ -75,7 +75,7 @@ def create_correlation_plot(df):
     Arguments:
         df {pd Dataframe} -- Dataframe with index as years and column1=data1 and column2=data2.
     """
-    assert isinstance(type(df),pd.DataFrame)
+    assert isinstance(df,pd.DataFrame)
     xdata = df.iloc[:, 0]
     ydata = df.iloc[:, 1]
     plt.clf

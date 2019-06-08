@@ -16,7 +16,7 @@ def plot_ridership_us(file2):
     Returns:
         Returns the public transport ridership change in US over the years plot 
     """
-    assert isinstance(type(file2),str)
+    assert isinstance(file2,str)
     df = pd.read_excel(file2, sheet_name= '1', skiprows = 4)
     df = df.iloc[10:106]  # For years 1922- 2017
     ## Renaming dataframe columns

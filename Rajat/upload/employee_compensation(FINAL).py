@@ -16,7 +16,7 @@ def emp_compute_plots(file):
         Return the employee compensation plots
 
     """
-    assert isinstance(type(file),str)
+    assert isinstance(file,str)
     df = pd.read_excel(file, sheet_name= '20', skiprows = 3)
     df = df.iloc[44:87]  # For years 1975- 2017
     df['Year'] = pd.to_numeric(df.Year.astype(str).str.replace(',',''), errors='coerce').fillna(float(1984)).astype(int)

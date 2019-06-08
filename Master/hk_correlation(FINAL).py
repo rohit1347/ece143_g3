@@ -17,7 +17,7 @@ def plot_hkcorrelation(file):
     Returns:
         Returns the HK Ridership vs Traffic Accidents correlation plot
     """
-    assert isinstance(type(file),str)
+    assert isinstance(file,str)
     df_2= pd.read_excel(file, skiprows = 8)
     df_2 = df_2.iloc[4:15]  # For years 2007- 2017
     df_2 = df_2.rename(columns = {'Unnamed: 2':'Years','交通乘客人次 (1) (3) (4) ':'Avg. daily ridership',
@@ -37,7 +37,7 @@ def create_correlation_plot(df):
     Arguments:
         df {pd Dataframe} -- Dataframe with index as years and column1=data1 and column2=data2.
     """
-    assert isinstance(type(df),pd.DataFrame)
+    assert isinstance(df,pd.DataFrame)
     xdata = df.iloc[:, 0]
     ydata = df.iloc[:, 1]
     plt.clf
