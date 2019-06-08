@@ -360,9 +360,9 @@ class apta_utils():
         return pd.read_csv(fname, index_col='Year')
 
     def combine_for_correlation(self, df1, df2):
-        if not df1:
+        if df1.empty:
             df1 = self.get_us_ridership()
-        if not df2:
+        if df2.empty:
             df2 = self.get_sales_data()
         """Takes fuel economy, ridership and car sales data and combines them for the years in which all 3 are present.
         """
