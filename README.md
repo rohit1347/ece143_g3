@@ -39,6 +39,7 @@ The folder `Master` contains all scripts and some dataset files.
 3. The repo contains dataset files totalling **9.73 MB**.
 4. Instead of using the provided Jupyter notebook to view plots, we recommend using the links provided in the section below to view all the plots. Mitigates the need to compile code to view plots.
 ### Running the Code
+#### Scripts
 1. `import_xls.py` contains `apta_utils()` class to obtain data from APTA sources, and visualization *(correlations, choropleths, fuel saved)* for the data.
 2. `graph_county_properties.py` - Gives a bar graph of all counties for the required property.
 3. `unlinked_trips_us.py` - Returns plot for the number of unlinked trips in public transport in US over the years.
@@ -50,6 +51,7 @@ The folder `Master` contains all scripts and some dataset files.
 9. `hk_correlation.py` - Returns the HK Ridership vs Traffic Accidents correlation plot.
 10. `employee_compensation.py` - Return the public transportation employee in US compensation plots.
 11. `Group-3_Project_Effectiveness of Public Transportation.ipynb` - Contains matplotlib plots
+
 
 ## Plots
 ### US Annual Trends
@@ -84,3 +86,15 @@ The folder `Master` contains all scripts and some dataset files.
 ---
 [Project Proposal](https://drive.google.com/a/eng.ucsd.edu/file/d/1tMI7DCHLvUNBs6RAQkT9LqQ2Diw3NZZU/view?usp=sharing)
 ---
+
+## Datasets
+1. `*Fact_Book_Appendix_B*` files contain US county wise data for transportation agencies.
+2. `abc-page-17-table-1.csv` - File containing electricity consumption of public transport over the years in HK.
+3. `table21.xls` - HK public transport ridership data.
+4. `NY_crashes.csv` - NY traffic accidents data.
+5. `table11.xls` - HK traffic accidents and avg. daily ridership data.
+6. `123.pdf` - HK public transport environment report.
+7. `2019-APTA-Fact-Book-Appendix-A.xlsx` - US APTA published ridership, revenue miles, employee compensation, etc dataset for public transport employees.
+8. `b.csv` - HK Ridership data (annually).
+9. `a.csv` - NY Ridership data(annually).
+10. `NY.csv` - NY revenue miles, unlinked trips, etc data.
